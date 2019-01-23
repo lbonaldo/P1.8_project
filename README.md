@@ -2,8 +2,8 @@
 
 ### PROJECT
 
-Luca Bonaldo - lbonaldo
+Luca Bonaldo - lbonaldo.
 
-Eduardo Quintana - Lagrang3
+Eduardo Quintana - Lagrang3.
 
-Costantino Pacilio - cpacilio
+Costantino Pacilio - cpacilio.
