@@ -1,6 +1,6 @@
-##P1.8 - Best Practices in Scientific Computing
+## P1.8 - Best Practices in Scientific Computing
 
-###PROJECT
+### PROJECT
 
 Luca Bonaldo - lbonaldo
 Eduardo Quintana - Lagrang3
