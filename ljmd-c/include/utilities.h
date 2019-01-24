@@ -1,8 +1,7 @@
+#include <data_structures.h>
+
 #ifndef UTILITIES_H
 #define UTILITIES_H
-
-/* generic file- or pathname buffer length */
-#define BLEN 200
 
 /* a few physical constants */
 const double kboltz=0.0019872067;     /* boltzman constant in kcal/mol/K */

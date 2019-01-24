@@ -1,3 +1,6 @@
+#include <data_structures.h>
+#include <stdio.h>
+
 #ifndef OUTPUT_H
 #define OUTPUT_H
 

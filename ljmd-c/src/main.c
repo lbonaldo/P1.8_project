@@ -5,11 +5,11 @@
  * baseline c version.
  */
 
-#include "input.h"
-#include "utilities.h"
-#include "output.h"
-#include "force.h"
-#include "data_structures.h"
+#include <input.h>
+#include <utilities.h>
+#include <output.h>
+#include <force.h>
+#include <data_structures.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+//static int get_a_line(FILE *fp, char *buf);
 
 /* main */
 int main(int argc, char **argv) 

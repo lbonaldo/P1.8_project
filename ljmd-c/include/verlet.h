@@ -1,3 +1,6 @@
+#include <data_structures.h>
+#include <utilities.h>
+
 #ifndef VERLET_H
 #define VERLET_H
 

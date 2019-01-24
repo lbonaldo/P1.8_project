@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+/* generic file- or pathname buffer length */
+#define BLEN 200
+
 #ifndef INPUT_H
 #define INPUT_H
 
