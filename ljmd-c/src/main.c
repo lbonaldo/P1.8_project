@@ -10,6 +10,7 @@
 #include <output.h>
 #include <force.h>
 #include <data_structures.h>
+#include <verlet.h>
 
 #include <stdio.h>
 #include <string.h>

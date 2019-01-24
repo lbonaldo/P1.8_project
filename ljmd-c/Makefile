@@ -5,7 +5,7 @@ SHELL=/bin/sh
 OBJ_SERIAL=$(SRC:src/%.f90=Obj-serial/%.o)
 ############################################
 
-default: split
+default: split serial
 
 serial:
 	$(MAKE) $(MFLAGS) -C Obj-$@
@@ -14,9 +14,9 @@ split:
 	$(MAKE) $(MFLAGS) -C Obj-$@
 
 clean:
-	#$(MAKE) $(MFLAGS) -C Obj-serial clean
+	$(MAKE) $(MFLAGS) -C Obj-serial clean
 	$(MAKE) $(MFLAGS) -C Obj-split clean
 	$(MAKE) $(MFLAGS) -C examples clean
 
-check: serial
+check: serial split
 	$(MAKE) $(MFLAGS) -C examples check

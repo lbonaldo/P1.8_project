@@ -2,14 +2,15 @@
 #include <string.h>
 #include <ctype.h>
 
-/* generic file- or pathname buffer length */
-#define BLEN 200
 
 #ifndef INPUT_H
 #define INPUT_H
 
+/* generic file- or pathname buffer length */
+#define BLEN 200
+
 /* helper function: read a line and then return
    the first string with whitespace stripped off */
-static int get_a_line(FILE *fp, char *buf);
+int get_a_line(FILE *fp, char *buf);
 
 #endif
