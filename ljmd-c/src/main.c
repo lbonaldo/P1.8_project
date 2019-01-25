@@ -10,7 +10,8 @@
 #include <output.h>
 #include <force.h>
 #include <data_structures.h>
-#include <verlet.h>
+#include <verlet1.h>
+#include <verlet2.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -101,7 +102,9 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
-        velverlet(&sys);
+        velverlet1(&sys);
+	force(&sys);
+	velverlet2(&sys);
         ekin(&sys);
     }
     /**************************************************/
