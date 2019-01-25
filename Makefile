@@ -3,6 +3,9 @@ default:
 	
 check:
 	$(MAKE) $(MFLAGS) -C ljmd-c check
-	
-.PHONY: test default
+
+pretest:
+	$(MAKE) $(MFLAGS) -C ljmd-c pretest
+
+.PHONY: check pretest default
 

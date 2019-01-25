@@ -20,3 +20,6 @@ clean:
 
 check: serial split
 	$(MAKE) $(MFLAGS) -C examples check
+	
+pretest: split
+	$(MAKE) $(MFLAGS) -C test pretest
