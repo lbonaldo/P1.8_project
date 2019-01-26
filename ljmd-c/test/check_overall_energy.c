@@ -11,7 +11,7 @@ int diff(double a,double b){
 }
 
 int main(){
-	
+
     int nprint,natoms,nsteps;
 	double mass,epsilon,sigma,rcut,box,dt;
     char restfile[BLEN], test_trajfile[BLEN], test_ergfile[BLEN], line[BLEN], 
