@@ -1,12 +1,13 @@
-#include "output.h"
 #include "input.h"
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 
-const double eps = 1e-6;
+const double eps = 1e-6,inf=1e-100;
+
 
 int diff(double a,double b){
+	if((fabs(a)+fabs(b)) < inf) return 0;
 	return fabs(a-b)/(fabs(a)+fabs(b)) > eps;
 }
 

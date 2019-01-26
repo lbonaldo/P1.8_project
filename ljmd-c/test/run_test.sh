@@ -4,6 +4,14 @@ echo "---------------------------------------------------"
 echo "--------------- RUNNING TESTS ---------------------"
 echo ""
 
+echo -n "Test force.o ... "
+./check_force.x < argon_108.inp
+if [[ ! $? -eq 0  ]]; then
+	echo " Wrong answer"
+	exit 1
+fi
+echo " Accepted."
+
 echo -n "Test overall ... "
 ../ljmd-split.x < argon_108.inp >/dev/null
 ret=$?
