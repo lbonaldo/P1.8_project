@@ -20,10 +20,10 @@ void force(mdsys_t *sys)
     azzero(sys->fz,sys->natoms);
 
     for(i=0; i < (sys->natoms); ++i) {
-        for(j=0; j < (sys->natoms); ++j) {
+        for(j=i+1; j < (sys->natoms); ++j) {
 
             /* particles have no interactions with themselves */
-            if (i==j) continue;
+            /* if (i==j) continue; */
             
             /* get distance between particle i and j */
             rx=pbc(sys->rx[i] - sys->rx[j], 0.5*sys->box);
@@ -35,11 +35,15 @@ void force(mdsys_t *sys)
             if (rsq < rcsq) {
 	        rinv = 1.0/rsq; r6 = rinv*rinv*rinv;
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
-                sys->epot += 0.5*(c12*r6 - c6)*r6;
+                sys->epot += (c12*r6 - c6)*r6;
 
                 sys->fx[i] += rx*ffac;
                 sys->fy[i] += ry*ffac;
                 sys->fz[i] += rz*ffac;
+
+		sys->fx[j] -= rx*ffac;
+                sys->fy[j] -= ry*ffac;
+                sys->fz[j] -= rz*ffac;
             }
         }
     }
