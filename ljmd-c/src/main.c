@@ -18,12 +18,15 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 //static int get_a_line(FILE *fp, char *buf);
 
 /* main */
 int main(int argc, char **argv) 
 {
+	
+	
     int nprint, i;
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
     FILE *fp,*traj,*erg;

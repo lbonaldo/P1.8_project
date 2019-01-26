@@ -1,11 +1,9 @@
 #include "force.h"
+#include <omp.h>
 
 /* compute forces */
 void force(mdsys_t *sys) 
 {
-    double r,ffac;
-    double rx,ry,rz;
-    int i,j;
 
     /* zero energy and forces */
     sys->epot=0.0;
@@ -13,8 +11,15 @@ void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
-    for(i=0; i < (sys->natoms); ++i) {
-        for(j=0; j < (sys->natoms); ++j) {
+	#pragma omp parallel for 
+    for(int i=0; i < sys->natoms; ++i) {
+		
+	//	printf("iter %d thread %d\n",i,omp_get_thread_num());
+	
+		double thread_epot = 0;
+    	double r,ffac;
+    	double rx,ry,rz;
+        for(int j=0; j < sys->natoms; ++j) {
 
             /* particles have no interactions with themselves */
             if (i==j) continue;
@@ -30,7 +35,7 @@ void force(mdsys_t *sys)
                 ffac = -4.0*sys->epsilon*(-12.0*pow(sys->sigma/r,12.0)/r
                                          +6*pow(sys->sigma/r,6.0)/r);
                 
-                sys->epot += 0.5*4.0*sys->epsilon*(pow(sys->sigma/r,12.0)
+                thread_epot += 0.5*4.0*sys->epsilon*(pow(sys->sigma/r,12.0)
                                                -pow(sys->sigma/r,6.0));
 
                 sys->fx[i] += rx/r*ffac;
@@ -38,5 +43,7 @@ void force(mdsys_t *sys)
                 sys->fz[i] += rz/r*ffac;
             }
         }
+		#pragma omp critical
+		sys -> epot += thread_epot;
     }
 }

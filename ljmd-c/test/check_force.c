@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <omp.h>
 #include "utilities.h"
 #include "data_structures.h"
 #include "input.h"
@@ -109,28 +110,28 @@ void copy_sys(mdsys_t* dest,const mdsys_t* orig){
 
 int cmp_sys(const mdsys_t* A,const mdsys_t* B){
 	if( A->natoms 	!= 	B->natoms) 	return 1;
-	if( A->nfi 		!= 	B->nfi ) 	return 1;
-	if( A->nsteps	!= 	B->nsteps ) return 1;
-	if( diff(A->dt	,  	B->dt))		return 1;
-	if( diff(A->mass,  	B->mass)) 	return 1;
-	if( diff(A->epsilon,B->epsilon))return 1;
-	if( diff(A->sigma , B->sigma)) 	return 1;
-	if( diff(A->box, 	B->box)	)	return 1;
-	if( diff(A->rcut,	B->rcut) )	return 1;
-	if( diff(A->temp,	B->temp))	return 1;
-	if( diff(A->epot,	B->epot))	return 1;
-	if( diff(A->ekin,	B->ekin))	return 1;
+	if( A->nfi 		!= 	B->nfi ) 	return 2;
+	if( A->nsteps	!= 	B->nsteps ) return 3;
+	if( diff(A->dt	,  	B->dt))		return 4;
+	if( diff(A->mass,  	B->mass)) 	return 5;
+	if( diff(A->epsilon,B->epsilon))return 6;
+	if( diff(A->sigma , B->sigma)) 	return 7;
+	if( diff(A->box, 	B->box)	)	return 8;
+	if( diff(A->rcut,	B->rcut) )	return 9;
+	if( diff(A->temp,	B->temp))	return 10;
+	if( diff(A->epot,	B->epot))	return 11;
+	if( diff(A->ekin,	B->ekin))	return 12;
 	
 	for(int i=0;i< A->natoms;++i){
-		if(diff(A->rx[i],B->rx[i] ))return 1;
-		if(diff(A->ry[i],B->ry[i] ))return 1;
-		if(diff(A->rz[i],B->rz[i] ))return 1;
-		if(diff(A->vx[i],B->vx[i] ))return 1;
-		if(diff(A->vy[i],B->vy[i] ))return 1;
-		if(diff(A->vz[i],B->vz[i] ))return 1;
-		if(diff(A->fx[i],B->fx[i] ))return 1;
-		if(diff(A->fy[i],B->fy[i] ))return 1;
-		if(diff(A->fz[i],B->fz[i] ))return 1;
+		if(diff(A->rx[i],B->rx[i] ))return 13;
+		if(diff(A->ry[i],B->ry[i] ))return 13;
+		if(diff(A->rz[i],B->rz[i] ))return 13;
+		if(diff(A->vx[i],B->vx[i] ))return 14;
+		if(diff(A->vy[i],B->vy[i] ))return 14;
+		if(diff(A->vz[i],B->vz[i] ))return 14;
+		if(diff(A->fx[i],B->fx[i] ))return 15;
+		if(diff(A->fy[i],B->fy[i] ))return 15;
+		if(diff(A->fz[i],B->fz[i] ))return 15;
 	}
 	
 	return 0;
@@ -185,9 +186,11 @@ int main()
 	force_bench(&sysA);
 	force(&sysB);
 	
-	if(cmp_sys(&sysA,&sysB))
+	int what;
+	if(what=cmp_sys(&sysA,&sysB)){
+		printf("exit with %d\n",what);
 		return 1;
-
+	}
 	deallocate(&sysA);
 	deallocate(&sysB);
 

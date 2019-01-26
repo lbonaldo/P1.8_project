@@ -4,6 +4,7 @@ echo "---------------------------------------------------"
 echo "--------------- RUNNING TESTS ---------------------"
 echo ""
 
+export OMP_NUM_THREADS=4
 echo -n "Test force.o ... "
 ./check_force.x < argon_108.inp
 if [[ ! $? -eq 0  ]]; then
@@ -13,9 +14,9 @@ fi
 echo " Accepted."
 
 echo -n "Test overall ... "
-../ljmd-split.x < argon_108.inp >/dev/null
+../ljmd-split.x < argon_108.inp >/dev/null  
 ret=$?
-./check_overall_energy.x < argon_108.inp
+./check_overall_energy.x < argon_108.inp >/dev/null
 if [[ (! $? -eq 0 ) || ( ! $ret -eq 0 ) ]]; then
 	echo " Wrong answer"
 	exit 1

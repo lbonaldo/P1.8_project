@@ -1,7 +1,7 @@
 exe=../ljmd-serial.x
 OBJDIR=../Obj-split
 OBJS=$(OBJDIR)/input.o $(OBJDIR)/output.o
-CFLAGS=-I../include -lm
+CFLAGS=-I../include -lm -fopenmp
 checklist=check_overall_energy.x check_another_thing.x check_force.x
 
 ### Run the pretests
