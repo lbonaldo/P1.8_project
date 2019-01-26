@@ -1,2 +1,4 @@
 108 Step 0: 3.03user
 2916 Step 0: 101.82user
+108 Step 1: 2.67user
+2916 Step 1: 99.22user
