@@ -18,3 +18,6 @@ check: ../$(EXE)
 	# head -10 ../reference/argon_2916.dat | awk '{printf("%d %.6f %.6f %.6f\n",$$1,$$2,$$3,$$4);}'> b.dat
 	# cmp a.dat b.dat || exit 1
 	# rm -f a.dat b.dat
+
+time:
+	./time.sh
