@@ -30,7 +30,7 @@ clean:
 
 ### generate reference files
 generate: main 
-	$(exe) < argon_108.inp.gen >/dev/null
+	$(exe) < argon_108.inp.gen > /dev/null 
 
 .PHONY: pretest clean generate main
 	

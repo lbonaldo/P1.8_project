@@ -9,6 +9,6 @@ argon_108.xyz.test     # trajectory
 argon_108.dat.test     # energies
 100             # nr MD steps
 5.0               # MD time step (in fs)
-1               # output print frequency
+100               # output print frequency
 argon_108.xyz   # checker trajectory file
 argon_108.dat   # checker energy file
