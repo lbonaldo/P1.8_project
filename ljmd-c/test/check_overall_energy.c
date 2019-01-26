@@ -13,32 +13,32 @@ int diff(double a,double b){
 
 int main(){
 
-    int nprint,natoms,nsteps;
-	double mass,epsilon,sigma,rcut,box,dt;
+    int nprint,nsteps;
+	//double mass,epsilon,sigma,rcut,box;
     char restfile[BLEN], test_trajfile[BLEN], test_ergfile[BLEN], line[BLEN], 
 			ergfile[BLEN], trajfile[BLEN];
-    FILE *fp,*traj,*erg,*test_traj,*test_erg;
+    FILE *traj,*erg,*test_traj,*test_erg;
 
     /* read input file */
     if(get_a_line(stdin,line)) return 1;
-    natoms=atoi(line);
+    //natoms=atoi(line);
     if(get_a_line(stdin,line)) return 1;
-    mass=atof(line);
+    //mass=atof(line);
     if(get_a_line(stdin,line)) return 1;
-    epsilon=atof(line);
+    //epsilon=atof(line);
     if(get_a_line(stdin,line)) return 1;
-    sigma=atof(line);
+    //sigma=atof(line);
     if(get_a_line(stdin,line)) return 1;
-    rcut=atof(line);
+    //rcut=atof(line);
     if(get_a_line(stdin,line)) return 1;
-    box=atof(line);
+    //box=atof(line);
     if(get_a_line(stdin,restfile)) return 1;
     if(get_a_line(stdin,test_trajfile)) return 1;
     if(get_a_line(stdin,test_ergfile)) return 1;
     if(get_a_line(stdin,line)) return 1;
     nsteps=atoi(line);
     if(get_a_line(stdin,line)) return 1;
-    dt=atof(line);
+    //dt=atof(line);
     if(get_a_line(stdin,line)) return 1;
     nprint=atoi(line);
     if(get_a_line(stdin,trajfile)) return 1;

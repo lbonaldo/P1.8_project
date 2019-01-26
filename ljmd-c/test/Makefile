@@ -1,11 +1,17 @@
 exe=../ljmd-serial.x
 OBJDIR=../Obj-split
-OBJS=$(OBJDIR)/input.o $(OBJDIR)/output.o
-CFLAGS=-I../include -lm -fopenmp
+SRC=test_a.c force.c input.c utilities.c
+VPATH=../src
+OBJ=$(SRC:%.c=%.o)
+CC=gcc
+CFLAGS=-I../include -fopenmp -Wall -O3 -ffast-math -fomit-frame-pointer
+LDLIBS=-lm
 checklist=check_overall_energy.x check_another_thing.x check_force.x
 
+default: pretest
+
 ### Run the pretests
-pretest: main generate $(checklist) 
+pretest: main generate $(checklist) test_a.x
 	./run_test.sh
 
 ### The program must be built in order to run tests
@@ -15,18 +21,32 @@ main:
 
 ### Program that compares the output energy files 
 check_overall_energy.x: check_overall_energy.c $(OBJDIR)/input.o 
-	gcc -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDLIBS)
 
 ###
 check_another_thing.x: check_another_thing.c
-	gcc -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS)
 	
 ### Chekc if force.c computes correctly.
 check_force.x: check_force.c $(OBJDIR)/force.o $(OBJDIR)/input.o $(OBJDIR)/utilities.o
-	gcc -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDLIBS)
 
+test_a: test_a.x
+	./test_a.x < test_a.inp
+
+# linker rule
+test_a.x: $(OBJ)
+	$(CC) -o $@ $(CFLAGS) $^ $(LDLIBS)
+
+# compilation pattern rule for objects
+%.o: %.c
+	$(CC) -c $(CFLAGS) $<
+
+# dependencies
+%.o: ../include/%.h
+	
 clean:
-	rm *.x *.test *.dat *.xyz
+	rm *.x *.test *.dat *.xyz *.o *.mod
 
 ### generate reference files
 generate: main 
@@ -35,4 +55,4 @@ generate: main
 .PHONY: pretest clean generate main
 	
 
-	
+
