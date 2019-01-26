@@ -7,5 +7,8 @@ check:
 pretest:
 	$(MAKE) $(MFLAGS) -C ljmd-c pretest
 
-.PHONY: check pretest default
+clean:
+	$(MAKE) $(MFLAGS) -C ljmd-c clean
+
+.PHONY: check pretest default clean
 

@@ -17,8 +17,9 @@ clean:
 	$(MAKE) $(MFLAGS) -C Obj-serial clean
 	$(MAKE) $(MFLAGS) -C Obj-split clean
 	$(MAKE) $(MFLAGS) -C examples clean
+	$(MAKE) $(MFLAGS) -C test clean
 
-check: serial split
+check: split
 	$(MAKE) $(MFLAGS) -C examples check
 	
 pretest: split
