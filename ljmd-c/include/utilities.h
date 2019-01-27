@@ -33,9 +33,14 @@ static const double mvsq2e=2390.05736153349; /* m*v^2 in kcal/mol */
 void azzero(double *d, const int n);
 
 /* helper function: apply minimum image convention */
-double pbc(double x, const double boxby2);
+double pbc(double x, const double boxby2,const double box);
 
 /* compute kinetic energy */
 void ekin(mdsys_t *sys);
+
+/* 	bring all particles inside the origin box, 
+	so pbc's while loop takes at
+	most one step */
+void normalize_positions(mdsys_t* sys);
 
 #endif

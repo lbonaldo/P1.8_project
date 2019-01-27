@@ -25,22 +25,23 @@ void force(mdsys_t *sys)
     	double rsq,ffac;
     	double rx,ry,rz;
 		double r6,rinv;
+		double box=sys->box,boxby2=0.5*box;
         for(int j=0; j < sys->natoms; ++j) {
 
             /* particles have no interactions with themselves */
             if (i==j) continue;
             
             /* get distance between particle i and j */
-            rx=pbc(sys->rx[i] - sys->rx[j], 0.5*sys->box);
-            ry=pbc(sys->ry[i] - sys->ry[j], 0.5*sys->box);
-            rz=pbc(sys->rz[i] - sys->rz[j], 0.5*sys->box);
+            rx=pbc(sys->rx[i] - sys->rx[j], boxby2,box);
+            ry=pbc(sys->ry[i] - sys->ry[j], boxby2,box);
+            rz=pbc(sys->rz[i] - sys->rz[j], boxby2,box);
             rsq = rx*rx + ry*ry + rz*rz;
       
             /* compute force and energy if within cutoff */
             if (rsq < rcsq) {
-	        rinv = 1.0/rsq; r6 = rinv*rinv*rinv;
+	        	rinv = 1.0/rsq; r6 = rinv*rinv*rinv;
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
-                thread_epot += 0.5*(c12*r6 - c6)*r6;
+                thread_epot += (c12*r6 - c6)*r6;
 
                 sys->fx[i] += rx*ffac;
                 sys->fy[i] += ry*ffac;
@@ -48,6 +49,6 @@ void force(mdsys_t *sys)
             }
         }
 		#pragma omp critical
-		sys -> epot += thread_epot;
+		sys -> epot += thread_epot*0.5;
     }
 }

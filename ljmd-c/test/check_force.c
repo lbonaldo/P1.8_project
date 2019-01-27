@@ -9,6 +9,13 @@
 
 const double eps = 1e-6,inf=1e-100;
 
+double pbc_bench(double x, const double boxby2)
+{
+    while (x >  boxby2) x -= 2.0*boxby2;
+    while (x < -boxby2) x += 2.0*boxby2;
+    return x;
+}
+
 
 int diff(double a,double b){
 	if((fabs(a)+fabs(b)) < inf) return 0;
@@ -35,9 +42,9 @@ void force_bench(mdsys_t *sys)
             if (i==j) continue;
             
             /* get distance between particle i and j */
-            rx=pbc(sys->rx[i] - sys->rx[j], 0.5*sys->box);
-            ry=pbc(sys->ry[i] - sys->ry[j], 0.5*sys->box);
-            rz=pbc(sys->rz[i] - sys->rz[j], 0.5*sys->box);
+            rx=pbc_bench(sys->rx[i] - sys->rx[j], 0.5*sys->box);
+            ry=pbc_bench(sys->ry[i] - sys->ry[j], 0.5*sys->box);
+            rz=pbc_bench(sys->rz[i] - sys->rz[j], 0.5*sys->box);
             r = sqrt(rx*rx + ry*ry + rz*rz);
       
             /* compute force and energy if within cutoff */

@@ -105,9 +105,11 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
-        velverlet1(&sys);
-	force(&sys);
-	velverlet2(&sys);
+		velverlet1(&sys);
+        normalize_positions(&sys);
+		force(&sys);
+		velverlet2(&sys);
+		
         ekin(&sys);
     }
     /**************************************************/
