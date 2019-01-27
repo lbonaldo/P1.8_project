@@ -68,9 +68,9 @@ int main(int argc, char **argv)
     sys.rx[1]=1.0; sys.ry[1]=-3.0; sys.rz[1]=-2.0;
 
     //check pbc
-    rx=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box);
-    ry=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box);
-    rz=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box);
+    rx=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box,sys.box);
+    ry=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box,sys.box);
+    rz=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box,sys.box);
     r=sqrt(rx*rx + ry*rx + rz*rz);
     
     //compute force
@@ -88,9 +88,9 @@ int main(int argc, char **argv)
     sys.rx[1]=1.0; sys.ry[1]=-3.0; sys.rz[1]=-2.0;
 
     //check pbc
-    rx=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box);
-    ry=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box);
-    rz=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box);
+    rx=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box,sys.box);
+    ry=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box,sys.box);
+    rz=pbc(sys.rx[1] - sys.rx[0], 0.5*sys.box,sys.box);
     r=sqrt(rx*rx + ry*rx + rz*rz);
     
     //compute force

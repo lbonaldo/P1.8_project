@@ -21,20 +21,24 @@ void force(mdsys_t *sys)
 		
 	//	printf("iter %d thread %d\n",i,omp_get_thread_num());
 	
-		double thread_epot = 0;
+		double thread_epot = 0,fxi=0,fyi=0,fzi=0;
     	double rsq,ffac;
-    	double rx,ry,rz;
+    	double rx,ry,rz,	
+			rxi=sys->rx[i],
+			ryi=sys->ry[i],
+			rzi=sys->rz[i];
 		double r6,rinv;
 		double box=sys->box,boxby2=0.5*box;
+		
         for(int j=0; j < sys->natoms; ++j) {
 
             /* particles have no interactions with themselves */
             if (i==j) continue;
             
             /* get distance between particle i and j */
-            rx=pbc(sys->rx[i] - sys->rx[j], boxby2,box);
-            ry=pbc(sys->ry[i] - sys->ry[j], boxby2,box);
-            rz=pbc(sys->rz[i] - sys->rz[j], boxby2,box);
+            rx=pbc(rxi - sys->rx[j], boxby2,box);
+            ry=pbc(ryi - sys->ry[j], boxby2,box);
+            rz=pbc(rzi - sys->rz[j], boxby2,box);
             rsq = rx*rx + ry*ry + rz*rz;
       
             /* compute force and energy if within cutoff */
@@ -43,11 +47,15 @@ void force(mdsys_t *sys)
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
                 thread_epot += (c12*r6 - c6)*r6;
 
-                sys->fx[i] += rx*ffac;
-                sys->fy[i] += ry*ffac;
-                sys->fz[i] += rz*ffac;
+                fxi += rx*ffac;
+                fyi += ry*ffac;
+                fzi += rz*ffac;
             }
         }
+		sys->fx[i]+=fxi;
+		sys->fy[i]+=fyi;
+		sys->fz[i]+=fzi;
+		
 		#pragma omp critical
 		sys -> epot += thread_epot*0.5;
     }

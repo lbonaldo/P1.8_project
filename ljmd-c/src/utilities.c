@@ -11,13 +11,14 @@ void azzero(double *d, const int n)
 
 /* 	helper function: apply minimum image convention 
 	boxby2: half's box length
-*/
+
 double pbc(double x, const double boxby2,const double box)
 {
     while (x >  boxby2) x -= box;
     while (x < -boxby2) x += box;
     return x;
 }
+*/
 
 /* compute kinetic energy */
 void ekin(mdsys_t *sys)
