@@ -36,16 +36,15 @@ void allocate_pairs(mdsys_t *sys){
 	//cstart = cidx*27;
 	for(m=0; m<27; m++)
 	  if(tmp[m]>=cidx){
-	    plist[2*(cstart+m)] = cidx;
-	    plist[2*(cstart+m)+1] = tmp[m];
+	    plist[2*(cstart)] = cidx;
+	    plist[2*(cstart)+1] = tmp[m];
 	    cstart += 1;
 	  }
       }
     }
   }
   sys->npair = cstart;
-  //sys->plist = (int *)realloc(sys->plist,2*(sys->npair)*sizeof(int));
-  printf("Inside alloc: %d, %ld\n",sys->npair, sizeof(plist)/sizeof(int));
+  sys->plist = (int *)realloc(sys->plist,2*(sys->npair)*sizeof(int));
 }
 
 /* to allocate atoms positions inside the cells*/

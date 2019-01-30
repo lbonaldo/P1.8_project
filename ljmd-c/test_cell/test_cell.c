@@ -51,14 +51,10 @@ int main(){
     sys.catoms=(int *)malloc(sys.Ncells*sizeof(int)); //atoms per cell
 
     sys.npair = sys.Ncells * 27;
-    printf("%ld\n", sizeof(sys.plist));
-    printf("Old npair: %d\n",sys.npair);
     /* create the pair list */
     allocate_pairs(&sys);
     printf("New npair: %d\n",sys.npair);
     assert(sys.Ncells*27 >= sys.npair);
-    printf("%ld\n", sizeof(sys.plist));
-    assert(sizeof(sys.plist)*0.5/sizeof(int)==sys.npair);
 
     /* initialize clist and catoms*/
     for(i=0; i<sys.Ncells; i++){
@@ -94,6 +90,10 @@ int main(){
     }
     assert(sum1 == sys.natoms && "wrong total number of atoms");
     assert(sum2 == (sys.natoms-1)*(sys.natoms)/2 && "wrong atom indices allocated");
+
+    for(i=0; i<sys.npair; i++)
+      printf("%d-%d  ",sys.plist[2*i],sys.plist[2*i+1]);
+    printf("\n");
 
     printf("Test completed successfully.\n");
     
