@@ -12,12 +12,14 @@
 #include <data_structures.h>
 #include <verlet1.h>
 #include <verlet2.h>
+#include <cell.h>
 
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <math.h>
+#include <assert.h>
 
 //static int get_a_line(FILE *fp, char *buf);
 
@@ -28,6 +30,7 @@ int main(int argc, char **argv)
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
     FILE *fp,*traj,*erg;
     mdsys_t sys;
+    int Ncells;
 
     /* read input file */
     if(get_a_line(stdin,line)) return 1;
@@ -51,11 +54,19 @@ int main(int argc, char **argv)
     sys.dt=atof(line);
     if(get_a_line(stdin,line)) return 1;
     nprint=atoi(line);
+    /* if(get_a_line(stdin,line)) return 1; */
+    /* sys.clen=atof(line); */
+
+    /* assert(sys.clen >= sys.rcut); */
+    /* /\* compute number of cells *\/ */
+    /* sys.ncells = sys.box/sys.clen; */
+    /* Ncells = pow(sys.ncells,3); */
+    /* printf("%d\t%d\n",sys.ncells,Ncells); */
 
     /* allocate memory */
     sys.rx=(double *)malloc(sys.natoms*sizeof(double));
     sys.ry=(double *)malloc(sys.natoms*sizeof(double));
-    sys.rz=(double *)malloc(sys.natoms*sizeof(double));
+    sys.rz=(double *)malloc(sys.natoms*sizeof(double));    
     sys.vx=(double *)malloc(sys.natoms*sizeof(double));
     sys.vy=(double *)malloc(sys.natoms*sizeof(double));
     sys.vz=(double *)malloc(sys.natoms*sizeof(double));
@@ -63,6 +74,13 @@ int main(int argc, char **argv)
     sys.fy=(double *)malloc(sys.natoms*sizeof(double));
     sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 
+    /* /\* memory for cell operations *\/ */
+    /* sys.clist=(cell_t **)malloc(Ncells*sizeof(void*)); */
+    /* sys.plist=(int *)malloc(Ncells*52*sizeof(int)); */
+
+    /* /\* create the pair list *\/ */
+    /* allocate_pairs(&sys); */
+    
     /* read restart */
     fp=fopen(restfile,"r");
     if(fp) {
@@ -100,6 +118,9 @@ int main(int argc, char **argv)
         /* write output, if requested */
         if ((sys.nfi % nprint) == 0)
             output(&sys, erg, traj);
+
+	/* /\* allocate the atoms inside the cells *\/ */
+	/* allocate_cells(&sys); */
 
         /* propagate system and recompute energies */
         velverlet1(&sys);
