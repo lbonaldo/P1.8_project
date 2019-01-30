@@ -1,13 +1,14 @@
 #include <cell.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /* to allocate the list of pairs */
 void allocate_pairs(mdsys_t *sys){
 
   int i, j, k , m;
   int iprec, inext, jprec, jnext, kprec, knext;
-  int cidx, cstart;
+  int cidx, cstart=0;
   int N = sys->ncells;
   int *plist = sys->plist;
   int tmp[27]; //temporary plist for a single cell
@@ -32,14 +33,19 @@ void allocate_pairs(mdsys_t *sys){
 	  tmp[m+18] = tmp[m] - k*N*N + knext*N*N;
 	}
 	//allocate the 27 cells
-	cstart = cidx*27;
-	for(m=0; m<27; m++){
-	  plist[2*(cstart+m)] = cidx;
-	  plist[2*(cstart+m)+1] = tmp[m];
-	}
+	//cstart = cidx*27;
+	for(m=0; m<27; m++)
+	  if(tmp[m]>=cidx){
+	    plist[2*(cstart+m)] = cidx;
+	    plist[2*(cstart+m)+1] = tmp[m];
+	    cstart += 1;
+	  }
       }
     }
   }
+  sys->npair = cstart;
+  //sys->plist = (int *)realloc(sys->plist,2*(sys->npair)*sizeof(int));
+  printf("Inside alloc: %d, %ld\n",sys->npair, sizeof(plist)/sizeof(int));
 }
 
 /* to allocate atoms positions inside the cells*/

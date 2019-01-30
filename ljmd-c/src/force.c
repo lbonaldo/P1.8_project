@@ -33,7 +33,8 @@ void force(mdsys_t *sys)
 	  jj = sys->clist[c2][k];
 
             /* particles have no interactions with themselves */
-            if (ii==jj) continue;
+	    /* and Newton's 3rd law */
+            if (ii>=jj) continue;
             
             /* get distance between particle i and j */
             rx=pbc(sys->rx[ii] - sys->rx[jj], 0.5*sys->box);
@@ -45,11 +46,15 @@ void force(mdsys_t *sys)
             if (rsq < rcsq) {
 	        rinv = 1.0/rsq; r6 = rinv*rinv*rinv;
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
-                sys->epot += 0.5*(c12*r6 - c6)*r6;
+                sys->epot += (c12*r6 - c6)*r6;
 
                 sys->fx[ii] += rx*ffac;
                 sys->fy[ii] += ry*ffac;
                 sys->fz[ii] += rz*ffac;
+
+		sys->fx[jj] -= rx*ffac;
+                sys->fy[jj] -= ry*ffac;
+                sys->fz[jj] -= rz*ffac;
 	    }
 	}
       }
