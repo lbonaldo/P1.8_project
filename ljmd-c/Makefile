@@ -18,12 +18,16 @@ clean:
 	$(MAKE) $(MFLAGS) -C Obj-split clean
 	$(MAKE) $(MFLAGS) -C examples clean
 	$(MAKE) $(MFLAGS) -C test clean
+	$(MAKE) $(MFLAGS) -C test_cell clean
 
 check: serial split
 	$(MAKE) $(MFLAGS) -C examples check
 
 test_a:
 	$(MAKE) $(MFLAGS) -C test test_a
+
+cell:
+	$(MAKE) $(MFLAGS) -C test_cell cell
 
 time: split
 	$(MAKE) $(MFLAGS) -C examples time

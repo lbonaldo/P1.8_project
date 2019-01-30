@@ -20,8 +20,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
-
-//static int get_a_line(FILE *fp, char *buf);
+#include <stddef.h>
 
 /* main */
 int main(int argc, char **argv) 
@@ -30,7 +29,6 @@ int main(int argc, char **argv)
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
     FILE *fp,*traj,*erg;
     mdsys_t sys;
-    int Ncells;
 
     /* read input file */
     if(get_a_line(stdin,line)) return 1;
@@ -61,8 +59,7 @@ int main(int argc, char **argv)
     assert(sys.clen >= sys.rcut);
     /* compute number of cells */
     sys.ncells = sys.box/sys.clen;
-    Ncells = pow(sys.ncells,3);
-    printf("%d\t%d\n",sys.ncells,Ncells);
+    sys.Ncells = sys.ncells * sys.ncells * sys.ncells;
 
     /* allocate memory */
     sys.rx=(double *)malloc(sys.natoms*sizeof(double));
@@ -76,13 +73,17 @@ int main(int argc, char **argv)
     sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 
     /* memory for cell operations */
-    sys.clist=(cell_t **)malloc(Ncells*sizeof(void*));
-    sys.plist=(int *)malloc(Ncells*52*sizeof(int));
+    sys.clist=(int **)malloc(sys.Ncells*sizeof(int*)); //Pointers to cells
+    sys.plist=(int *)malloc(sys.Ncells*54*sizeof(int)); //List of pairs
+    sys.catoms=(int *)malloc(sys.Ncells*sizeof(int)); //atoms per cell
 
-    for(i=0; i<Ncells; i++){
-      sys.clist[i]=NULL;
+    /* initialize clist and catoms*/
+    for(i=0; i<sys.Ncells; i++){
+      sys.clist[i]=(int *)malloc(sizeof(int));
+      sys.catoms[i]=0;
     }
-
+    
+    sys.npair = sys.Ncells * 27;
     /* create the pair list */
     allocate_pairs(&sys);
     
@@ -104,9 +105,9 @@ int main(int argc, char **argv)
         return 3;
     }
 
-    /* allocate the atoms inside the cells */
+    /* allocate particles inside the cells */
     allocate_cells(&sys);
-
+    
     /* initialize forces and energies.*/
     sys.nfi=0;
     force(&sys);
@@ -129,11 +130,14 @@ int main(int argc, char **argv)
 
         /* propagate system and recompute energies */
         velverlet1(&sys);
-	/* /\* allocate the atoms inside the cells *\/ */
-	/* allocate_cells(&sys); */
+
+	/* allocate the atoms inside the cells */
+	allocate_cells(&sys);
+
 	force(&sys);
 	velverlet2(&sys);
         ekin(&sys);
+	
     }
     /**************************************************/
 
@@ -153,7 +157,10 @@ int main(int argc, char **argv)
     free(sys.fz);
 
     free(sys.plist);
+    free(sys.catoms);
+    for(i=0; i<sys.Ncells; i++)
+      free(sys.clist[i]);
     free(sys.clist);
-
+    
     return 0;
 }

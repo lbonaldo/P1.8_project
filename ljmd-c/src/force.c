@@ -9,6 +9,9 @@ void force(mdsys_t *sys)
     double r6, rinv;
     int i,j;
 
+    //cell variables
+    int c1, c2, ii, jj, k;
+
     c12=4.0*sys->epsilon*pow(sys->sigma,12.0);
     c6=4.0*sys->epsilon*pow(sys->sigma,6.0);
     rcsq=(sys->rcut)*(sys->rcut);
@@ -19,16 +22,23 @@ void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
-    for(i=0; i < (sys->natoms); ++i) {
-        for(j=0; j < (sys->natoms); ++j) {
+    for(i=0; i < sys->npair; ++i) {
+      c1 = sys->plist[2*i];
+      c2 = sys->plist[2*i+1];
+      
+      for(j=0; j < sys->catoms[c1]; ++j) {
+	ii = sys->clist[c1][j];
+
+	for(k=0; k<sys->catoms[c2]; k++){
+	  jj = sys->clist[c2][k];
 
             /* particles have no interactions with themselves */
-            if (i==j) continue;
+            if (ii==jj) continue;
             
             /* get distance between particle i and j */
-            rx=pbc(sys->rx[i] - sys->rx[j], 0.5*sys->box);
-            ry=pbc(sys->ry[i] - sys->ry[j], 0.5*sys->box);
-            rz=pbc(sys->rz[i] - sys->rz[j], 0.5*sys->box);
+            rx=pbc(sys->rx[ii] - sys->rx[jj], 0.5*sys->box);
+            ry=pbc(sys->ry[ii] - sys->ry[jj], 0.5*sys->box);
+            rz=pbc(sys->rz[ii] - sys->rz[jj], 0.5*sys->box);
             rsq = rx*rx + ry*ry + rz*rz;
       
             /* compute force and energy if within cutoff */
@@ -37,10 +47,11 @@ void force(mdsys_t *sys)
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
                 sys->epot += 0.5*(c12*r6 - c6)*r6;
 
-                sys->fx[i] += rx*ffac;
-                sys->fy[i] += ry*ffac;
-                sys->fz[i] += rz*ffac;
-            }
-        }
+                sys->fx[ii] += rx*ffac;
+                sys->fy[ii] += ry*ffac;
+                sys->fz[ii] += rz*ffac;
+	    }
+	}
+      }
     }
 }

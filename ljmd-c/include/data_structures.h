@@ -1,14 +1,6 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
-/* structure to store informations
- * cells */
-struct _cell {
-  int natoms;  //total number of atoms inside the cell
-  int *idxlist; //atom indices belonging to the cell
-};
-typedef struct _cell cell_t;
-
 /* structure to hold the complete information 
  * about the MD system */
 struct _mdsys {
@@ -19,10 +11,13 @@ struct _mdsys {
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
 
+  //cell structures
     double clen;
-    int ncells; //ncells along a SINGLE direction
-    cell_t **clist;
-    int *plist;
+    int ncells, Ncells; //ncells: along a SINGLE direction
+                        //Ncells: total
+    int **clist;        //lists of cell indices
+    int npair, *plist;  //list of close pairs
+    int *catoms;        //num of atoms per cell;
 };
 typedef struct _mdsys mdsys_t;
 

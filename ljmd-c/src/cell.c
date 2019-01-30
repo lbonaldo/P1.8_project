@@ -1,5 +1,6 @@
 #include <cell.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 /* to allocate the list of pairs */
 void allocate_pairs(mdsys_t *sys){
@@ -30,11 +31,11 @@ void allocate_pairs(mdsys_t *sys){
 	  tmp[m+9] = tmp[m] - k*N*N + kprec*N*N;
 	  tmp[m+18] = tmp[m] - k*N*N + knext*N*N;
 	}
-	//allocate the 26 cells
-	cstart = cidx*52;
-	for(m=0; m<26; m++){
-	  plist[cstart+m] = cidx;
-	  plist[cstart+m+1] = tmp[m+1];
+	//allocate the 27 cells
+	cstart = cidx*27;
+	for(m=0; m<27; m++){
+	  plist[2*(cstart+m)] = cidx;
+	  plist[2*(cstart+m)+1] = tmp[m];
 	}
       }
     }
@@ -44,11 +45,13 @@ void allocate_pairs(mdsys_t *sys){
 /* to allocate atoms positions inside the cells*/
 void allocate_cells(mdsys_t *sys){
   
-  int i, j;
+  int i, j, A;
   int c[3], cidx; //cell indices
   double linv, N;
   double r[3]; //array of positions;
 
+  empty_cells(sys);
+  
   for(i=0; i<sys->natoms; i++){
     r[0] = sys->rx[i];
     r[1] = sys->ry[i];
@@ -69,29 +72,21 @@ void allocate_cells(mdsys_t *sys){
 	c[j] -= 1;
     }
     cidx = c[2]*N*N + c[0]*N + c[1];
-    if(sys->clist[cidx]==NULL){
-      cell_t tmp;
-      tmp.natoms=1;
-      tmp.idxlist=(int*)malloc(sizeof(int));
-      tmp.idxlist[0]=i;
-      sys->clist[cidx]=&tmp;
-      //printf("%d\n",sys->clist[cidx]->natoms);
-      //sys->clist[cidx]->idxlist[sys->clist[cidx]->natoms] = i;
-      //sys->clist[cidx]->natoms += 1;
-      //printf("%d\t%d\n",i,cidx);
-    }
-    else{
-       printf("%d\n",sys->clist[cidx]->natoms);
-      cell_t tmp;
-      tmp.natoms=(sys->clist[cidx]->natoms) + 1;
-      tmp.idxlist=(int*)malloc(tmp.natoms*sizeof(int));
-      //for(j=0; j<tmp.natoms-3; j++)
-      //printf("%d\n",sys->clist[cidx]->idxlist[j]);
-       	//tmp.idxlist[j]=sys->clist[cidx]->idxlist[j];
-      //tmp.idxlist[tmp.natoms-2]=i;
-      //free(sys->clist[cidx]);
-      //sys->clist[cidx]=&tmp;
-      //printf("%d\t%d\n",i,cidx);
-    }
+    A = sys->catoms[cidx] + 1;
+
+    if( sizeof(sys->clist[cidx])/sizeof(int) < A )
+      sys->clist[cidx] = (int *)realloc(sys->clist[cidx], A*sizeof(int));
+
+    sys->clist[cidx][A-1] = i;
+    sys->catoms[cidx] += 1;
+  }
+}
+
+void empty_cells(mdsys_t *sys){
+  int i, j;
+  for(i=0; i<sys->Ncells; i++){
+    sys->catoms[i] = 0;
+    for(j=0; j<sizeof(sys->clist[i])/sizeof(int); j++)
+      sys->clist[i][j] = 0;
   }
 }
