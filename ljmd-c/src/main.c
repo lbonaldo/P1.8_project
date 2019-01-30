@@ -79,6 +79,10 @@ int main(int argc, char **argv)
     sys.clist=(cell_t **)malloc(Ncells*sizeof(void*));
     sys.plist=(int *)malloc(Ncells*52*sizeof(int));
 
+    for(i=0; i<Ncells; i++){
+      sys.clist[i]=NULL;
+    }
+
     /* create the pair list */
     allocate_pairs(&sys);
     
@@ -100,6 +104,9 @@ int main(int argc, char **argv)
         return 3;
     }
 
+    /* allocate the atoms inside the cells */
+    allocate_cells(&sys);
+
     /* initialize forces and energies.*/
     sys.nfi=0;
     force(&sys);
@@ -120,11 +127,10 @@ int main(int argc, char **argv)
         if ((sys.nfi % nprint) == 0)
             output(&sys, erg, traj);
 
-	/* /\* allocate the atoms inside the cells *\/ */
-	/* allocate_cells(&sys); */
-
         /* propagate system and recompute energies */
         velverlet1(&sys);
+	/* /\* allocate the atoms inside the cells *\/ */
+	/* allocate_cells(&sys); */
 	force(&sys);
 	velverlet2(&sys);
         ekin(&sys);
@@ -145,6 +151,9 @@ int main(int argc, char **argv)
     free(sys.fx);
     free(sys.fy);
     free(sys.fz);
+
+    free(sys.plist);
+    free(sys.clist);
 
     return 0;
 }

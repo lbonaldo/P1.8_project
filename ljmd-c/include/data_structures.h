@@ -19,10 +19,10 @@ struct _mdsys {
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
 
+    double clen;
     int ncells; //ncells along a SINGLE direction
     cell_t **clist;
     int *plist;
-    double clen;
 };
 typedef struct _mdsys mdsys_t;
 

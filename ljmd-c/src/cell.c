@@ -1,4 +1,5 @@
 #include <cell.h>
+#include <stddef.h>
 
 /* to allocate the list of pairs */
 void allocate_pairs(mdsys_t *sys){
@@ -61,14 +62,36 @@ void allocate_cells(mdsys_t *sys){
     }
 
     //allocate the corresponding cell
-    N = sys->ncells; linv = 1/sys->clen;
+    N = sys->ncells; linv = 1/(sys->clen);
     for(j=0; j<3; j++){
-      c[i] = r[i]*linv;
-      if(r[i]*linv > N)
-	c[i] -= 1;
+      c[j] = r[j]*linv;
+      if(r[j]*linv > N)
+	c[j] -= 1;
     }
     cidx = c[2]*N*N + c[0]*N + c[1];
-    sys->clist[cidx]->idxlist[sys->clist[cidx]->natoms] = i;
-    sys->clist[cidx]->natoms += 1;
+    if(sys->clist[cidx]==NULL){
+      cell_t tmp;
+      tmp.natoms=1;
+      tmp.idxlist=(int*)malloc(sizeof(int));
+      tmp.idxlist[0]=i;
+      sys->clist[cidx]=&tmp;
+      //printf("%d\n",sys->clist[cidx]->natoms);
+      //sys->clist[cidx]->idxlist[sys->clist[cidx]->natoms] = i;
+      //sys->clist[cidx]->natoms += 1;
+      //printf("%d\t%d\n",i,cidx);
+    }
+    else{
+       printf("%d\n",sys->clist[cidx]->natoms);
+      cell_t tmp;
+      tmp.natoms=(sys->clist[cidx]->natoms) + 1;
+      tmp.idxlist=(int*)malloc(tmp.natoms*sizeof(int));
+      //for(j=0; j<tmp.natoms-3; j++)
+      //printf("%d\n",sys->clist[cidx]->idxlist[j]);
+       	//tmp.idxlist[j]=sys->clist[cidx]->idxlist[j];
+      //tmp.idxlist[tmp.natoms-2]=i;
+      //free(sys->clist[cidx]);
+      //sys->clist[cidx]=&tmp;
+      //printf("%d\t%d\n",i,cidx);
+    }
   }
 }
