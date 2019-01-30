@@ -8,14 +8,14 @@ void allocate_pairs(mdsys_t *sys){
   int cidx, cstart;
   int N = sys->ncells;
   int *plist = sys->plist;
-  int *tmp; //temporary plist for a single cell
+  int tmp[27]; //temporary plist for a single cell
 
   for(k=0; k<N; k++){
-    kprec = (N-k-1)%N; knext = (k+1)%N;
+    kprec = (N+k-1)%N; knext = (k+1)%N;
     for(i=0; i<N; i++){
-      iprec = (N-i-1)%N; inext = (i+1)%N;
+      iprec = (N+i-1)%N; inext = (i+1)%N;
       for(j=0; j<N; j++){
-	jprec = (N-j-1)%N; jnext = (j+1)%N;
+	jprec = (N+j-1)%N; jnext = (j+1)%N;
 	cidx = j + i*N + k*N*N;
 	//allocate the 27 cells
 	tmp[0] = cidx;
@@ -44,9 +44,9 @@ void allocate_pairs(mdsys_t *sys){
 void allocate_cells(mdsys_t *sys){
   
   int i, j;
-  int *c, cidx; //cell indices
+  int c[3], cidx; //cell indices
   double linv, N;
-  double *r; //array of positions;
+  double r[3]; //array of positions;
 
   for(i=0; i<sys->natoms; i++){
     r[0] = sys->rx[i];
@@ -67,7 +67,7 @@ void allocate_cells(mdsys_t *sys){
       if(r[i]*linv > N)
 	c[i] -= 1;
     }
-    cidx = c[3]*N*N + c[1]*N + c[2];
+    cidx = c[2]*N*N + c[0]*N + c[1];
     sys->clist[cidx]->idxlist[sys->clist[cidx]->natoms] = i;
     sys->clist[cidx]->natoms += 1;
   }

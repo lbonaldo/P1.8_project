@@ -54,14 +54,15 @@ int main(int argc, char **argv)
     sys.dt=atof(line);
     if(get_a_line(stdin,line)) return 1;
     nprint=atoi(line);
-    /* if(get_a_line(stdin,line)) return 1; */
-    /* sys.clen=atof(line); */
+    
+    if(get_a_line(stdin,line)) return 1;
+    sys.clen=atof(line);
 
-    /* assert(sys.clen >= sys.rcut); */
-    /* /\* compute number of cells *\/ */
-    /* sys.ncells = sys.box/sys.clen; */
-    /* Ncells = pow(sys.ncells,3); */
-    /* printf("%d\t%d\n",sys.ncells,Ncells); */
+    assert(sys.clen >= sys.rcut);
+    /* compute number of cells */
+    sys.ncells = sys.box/sys.clen;
+    Ncells = pow(sys.ncells,3);
+    printf("%d\t%d\n",sys.ncells,Ncells);
 
     /* allocate memory */
     sys.rx=(double *)malloc(sys.natoms*sizeof(double));
@@ -74,12 +75,12 @@ int main(int argc, char **argv)
     sys.fy=(double *)malloc(sys.natoms*sizeof(double));
     sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 
-    /* /\* memory for cell operations *\/ */
-    /* sys.clist=(cell_t **)malloc(Ncells*sizeof(void*)); */
-    /* sys.plist=(int *)malloc(Ncells*52*sizeof(int)); */
+    /* memory for cell operations */
+    sys.clist=(cell_t **)malloc(Ncells*sizeof(void*));
+    sys.plist=(int *)malloc(Ncells*52*sizeof(int));
 
-    /* /\* create the pair list *\/ */
-    /* allocate_pairs(&sys); */
+    /* create the pair list */
+    allocate_pairs(&sys);
     
     /* read restart */
     fp=fopen(restfile,"r");

@@ -33,7 +33,7 @@
        int cidx, cstart;
        int N = sys->ncells;
        int *pair = sys->plist;
-       int *tmp; //temporary plist for a single cell
+       int tmp[27]; //temporary plist for a single cell
        for(k=0; k < N; k++){
            kprec = (N-k-1)%N; knext = (k+1)%N;
            for(i=0; i < N; i++){
@@ -72,7 +72,7 @@
    	int i, j;
        int ix, iy, iz, cidx; //cell indices
    	double rx, ry, rz, linv, N;
-   	double *r; //array of positions;
+   	double r[3]; //array of positions;
        _cell *cell; //cell pointer;
    	for(i=0; i < sys->natoms; i++){
        	rx = sys->rx[i]; r[0] = rx;
