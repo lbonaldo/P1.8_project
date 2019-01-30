@@ -59,6 +59,7 @@ int main(int argc, char **argv)
     assert(sys.clen >= sys.rcut);
     /* compute number of cells */
     sys.ncells = sys.box/sys.clen;
+    assert(sys.ncells>2 && "Not enough cells.");
     sys.Ncells = sys.ncells * sys.ncells * sys.ncells;
 
     /* allocate memory */
