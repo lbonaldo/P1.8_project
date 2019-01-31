@@ -3,7 +3,7 @@
 #EXE=ljmd-serial.x 
 EXE=ljmd-split.x
 
-default: check
+default: check python
 
 clean:
 	rm -f *.xyz *.dat
@@ -21,3 +21,7 @@ check: ../$(EXE)
 
 time:
 	./time.sh
+
+python:
+	python3 ../py_interface/interface.py argon_108.inp
+

@@ -1,14 +1,14 @@
 # -*- Makefile -*-
 SHELL=/bin/sh
 CC=gcc
-CFLAGS=-I../include -Wall -g -ggdb -O3 -ffast-math -fomit-frame-pointer -fPIC
+CFLAGS=-I../include -Wall -g -ggdb -O3 -ffast-math -fomit-frame-pointer -fPIC -fopenmp -std=gnu11
 LDLIBS=-lm -shared
 
 # list of source files
 SRC=force.c utilities.c verlet1.c verlet2.c input.c output.c
-VPATH=.
+VPATH=../src
 OBJ=$(SRC:%.c=%.o)
-MAIN=sysdlib.so
+MAIN=../sysdlib.so
 
 default: $(MAIN)
 
@@ -25,3 +25,5 @@ $(MAIN): $(OBJ)
 
 # dependencies
 %.o: ../include/%.h
+
+.PHONY: clean

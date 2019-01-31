@@ -23,7 +23,6 @@ main:
 check_overall_energy.x: check_overall_energy.c $(OBJ)
 	$(CC) $^ -o $@ $(CFLAGS) $(LDLIBS)
 
-	
 ### Chekc if force.c computes correctly.
 check_force.x: check_force.c $(OBJ)
 	$(CC) $^ -o $@ $(CFLAGS) $(LDLIBS)
@@ -44,15 +43,15 @@ test_b.x: test_b.h
 # dependencies
 %.o: ../include/%.h
 
-	
+
 clean:
-	rm *.x *.test *.dat *.xyz *.o *.mod
+	rm -f *.x *.test *.dat *.xyz *.o *.mod
 
 ### generate reference files
 generate: main 
 	$(exe) < argon_108.inp.gen > /dev/null 
 
 .PHONY: pretest clean generate main
-	
+
 
 
