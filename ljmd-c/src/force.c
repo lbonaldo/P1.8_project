@@ -18,7 +18,8 @@ void force(mdsys_t *sys)
 
     int i, j;
 
-#pragma omp parallel for collapse(2) private(j)
+    #pragma omp parallel for collapse(2) private(j)
+    //#pragma omp parallel for
     for(i=0; i < sys->Ncells; ++i){
       for(j=0; j < sys->natoms; ++j) {
 
