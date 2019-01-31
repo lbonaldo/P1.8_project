@@ -7,7 +7,7 @@ from math import *
 #to get argument from terminal
 from sys import argv
 
-script, input_file = argv
+input_file = 'argon_108.inp'
 
 #import c-libraries
 dso = CDLL("./sysdlib.so")
@@ -117,13 +117,3 @@ print("Simulation Done.")
 
 erg.close()
 traj.close()
-
-# dso.freeme(sys_data.rx)
-# dso.freeme(sys_data.ry)
-# dso.freeme(sys_data.rz)
-# dso.freeme(sys_data.vx)
-# dso.freeme(sys_data.vy)
-# dso.freeme(sys_data.vz)
-# dso.freeme(sys_data.fx)
-# dso.freeme(sys_data.fy)
-# dso.freeme(sys_data.fz)
