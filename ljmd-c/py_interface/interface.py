@@ -2,10 +2,8 @@
 
 #to call c-routines
 from ctypes import *
-
 #include file
 from math import *
-
 #to get argument from terminal
 from sys import argv
 
@@ -15,16 +13,13 @@ script, input_file = argv
 dso = CDLL("./sysdlib.so")
 
 def output(sys_data, file1, file2):
-    
-    print("{} {:20.8f} {:20.8f} {:20.8f} {:20.8f}".format(sys_data.nfi, sys_data.temp, sys_data.ekin, sys_data.epot, sys_data.ekin+sys_data.epot))
 
+    print("{} {:20.8f} {:20.8f} {:20.8f} {:20.8f}".format(sys_data.nfi, sys_data.temp, sys_data.ekin, sys_data.epot, sys_data.ekin+sys_data.epot))
     print("{} {:20.8f} {:20.8f} {:20.8f} {:20.8f}".format(sys_data.nfi, sys_data.temp, sys_data.ekin, sys_data.epot, sys_data.ekin+sys_data.epot), file=file1)
-        
     print("{}\n nfi={} etot={:20.8f}\n".format(sys_data.natoms, sys_data.nfi, sys_data.ekin+sys_data.epot), file=file2)
+
     for i in range(sys_data.natoms):
         print("Ar  {:20.8f} {:20.8f} {:20.8f}\n".format(sys_data.rx[i], sys_data.ry[i], sys_data.rz[i]), file=file2)
-
-    return
 
 def read_file(restfile, sys_data):
     rest = open(restfile, 'r')
@@ -33,20 +28,13 @@ def read_file(restfile, sys_data):
             sys_data.rx[i] = float(line.split()[0])
             sys_data.ry[i] = float(line.split()[1])
             sys_data.rz[i] = float(line.split()[2])
-            print(sys_data.rx[i])
-            print(sys_data.ry[i])
-            print(sys_data.rz[i])
         elif (i >= sys_data.natoms and i < 2*sys_data.natoms):
-            sys_data.vx[i] = float(line.split()[0])
-            sys_data.vy[i] = float(line.split()[1])
-            sys_data.vz[i] = float(line.split()[2])
-            print(sys_data.vx[i])
-            print(sys_data.vy[i])
-            print(sys_data.vz[i])
+            sys_data.vx[i-sys_data.natoms] = float(line.split()[0])
+            sys_data.vy[i-sys_data.natoms] = float(line.split()[1])
+            sys_data.vz[i-sys_data.natoms] = float(line.split()[2])
         else:
             print("Initilization error.")
     rest.close()
-    return
 
 #structure with the constants
 class mdsys(Structure):
@@ -58,26 +46,8 @@ class mdsys(Structure):
                 ("vx", POINTER(c_double)), ("vy", POINTER(c_double)), ("vz", POINTER(c_double)),
                 ("fx", POINTER(c_double)), ("fy", POINTER(c_double)), ("fz", POINTER(c_double))]
 
-# #constants
-# class Constants():
-#     def __init__(self, kboltz, mvsq2e):
-#         self._kboltz = kboltz
-#         self._mvsq2e = mvsq2e
-        
-#     @property
-#     def kboltz(self):
-#         return self._kboltz
-
-#     @property
-#     def mvsq2e(self):
-#         return self._mvsq2e
-
 with open(input_file, 'r') as f:
-    inputs = [i.split()[0] for i in f] ##add an error if not initilized? if(fp)?
-
-# const = Constants(0.0019872067, 2390.05736153349)
-# kboltz = const.kboltz
-# mvsq2e = const.mvsq2e
+    inputs = [i.split()[0] for i in f] ##add an error if not initialized? if(fp)?
 
 #initializing the structure from file
 sys_data = mdsys()
@@ -108,23 +78,11 @@ sys_data.fz = (c_double * sys_data.natoms)()
 
 #initialization
 read_file(restfile, sys_data)
-quit()
             
-#dso.azzero.argtypes = [ POINTER(c_double), c_int]
+dso.azzero.argtypes = [ POINTER(c_double), c_int]
 dso.azzero(sys_data.fx, sys_data.natoms)
 dso.azzero(sys_data.fy, sys_data.natoms)
 dso.azzero(sys_data.fz, sys_data.natoms)
-
-# #update structure before starting the loop
-# sys_data.rx = cast(rx_list, POINTER(c_double))
-# sys_data.ry = cast(ry_list, POINTER(c_double))
-# sys_data.rz = cast(rz_list, POINTER(c_double))
-# sys_data.vx = cast(vx_list, POINTER(c_double))
-# sys_data.vy = cast(vy_list, POINTER(c_double))
-# sys_data.vz = cast(vz_list, POINTER(c_double))
-# sys_data.fx = cast(fx_list, POINTER(c_double))
-# sys_data.fy = cast(fy_list, POINTER(c_double))
-# sys_data.fx = cast(fz_list, POINTER(c_double))
 
 sys_data.nfi = 0
 
@@ -132,26 +90,50 @@ sys_data.nfi = 0
 dso.force(byref(sys_data))
 dso.ekin(byref(sys_data))
 
-with open(ergfile,"w") as erg, open(trajfile,"w") as traj:
+erg = open(ergfile,"w")
+traj = open(trajfile,"w")
 
-    print(f"Starting simulation with {sys_data.natoms} atoms for {sys_data.nsteps} steps.")
-    print("     NFI            TEMP            EKIN                 EPOT              ETOT")
-    
-    output(sys_data, erg, traj)
+print(f"Starting simulation with {sys_data.natoms} atoms for {sys_data.nsteps} steps.")
+print("     NFI            TEMP            EKIN                 EPOT              ETOT")
 
-    # main MD loop
-    
-    for sys_data.nfi in range(1, sys_data.nsteps + 1, 1):
+output(sys_data, erg, traj)
 
-        # write output, if requested
-        if ((sys_data.nfi % nprint) == 0):
-            output(sys_data, erg, traj)
+# main MD loop
     
-        #  propagate system and recompute energies
-        dso.velverlet1(byref(sys_data))
-        dso.force(byref(sys_data))
-        dso.velverlet2(byref(sys_data))
-        dso.ekin(byref(sys_data))
+for sys_data.nfi in range(1, sys_data.nsteps + 1, 1):
+
+    # write output, if requested
+    if ((sys_data.nfi % nprint) == 0):
+        output(sys_data, erg, traj)
+        
+    #  propagate system and recompute energies
+    dso.velverlet1(byref(sys_data))
+    dso.force(byref(sys_data))
+    dso.velverlet2(byref(sys_data))
+    dso.ekin(byref(sys_data))
 
 # clean up: close files, free memory
 print("Simulation Done.")
+
+erg.close()
+traj.close()
+
+# dso.freeme(sys_data.rx)
+# dso.freeme(sys_data.ry)
+# dso.freeme(sys_data.rz)
+# dso.freeme(sys_data.vx)
+# dso.freeme(sys_data.vy)
+# dso.freeme(sys_data.vz)
+# dso.freeme(sys_data.fx)
+# dso.freeme(sys_data.fy)
+# dso.freeme(sys_data.fz)
+
+# del sys_data.rx
+# del sys_data.ry
+# del sys_data.rz
+# del sys_data.vx
+# del sys_data.vy
+# del sys_data.vz
+# del sys_data.fx
+# del sys_data.fy
+# del sys_data.fz
