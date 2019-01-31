@@ -10,7 +10,7 @@ from sys import argv
 input_file = 'argon_108.inp'
 
 #import c-libraries
-dso = CDLL("./sysdlib.so")
+dso = CDLL("../sysdlib.so")
 
 def output(sys_data, file1, file2):
 

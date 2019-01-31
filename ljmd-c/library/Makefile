@@ -1,20 +1,19 @@
 # -*- Makefile -*-
 SHELL=/bin/sh
 CC=gcc
-ATOMS=THREE
-CFLAGS=-I../include -Wall -g -O3 -D $(ATOMS)
-LDLIBS=-lm
+CFLAGS=-I../include -Wall -g -ggdb -O3 -ffast-math -fomit-frame-pointer -fPIC -fopenmp -std=gnu11
+LDLIBS=-lm -shared
 
 # list of source files
-SRC=test_b.c input.c verlet1.c verlet2.c
+SRC=force.c utilities.c verlet1.c verlet2.c input.c output.c
 VPATH=../src
 OBJ=$(SRC:%.c=%.o)
-MAIN=test_b.x
+MAIN=../sysdlib.so
 
 default: $(MAIN)
 
 clean:
-	rm -f *.mod *.o $(MAIN)
+	rm -f *.mod *.o $(MAIN) *.xyz *.dat
 
 # linker rule
 $(MAIN): $(OBJ)
@@ -26,3 +25,5 @@ $(MAIN): $(OBJ)
 
 # dependencies
 %.o: ../include/%.h
+
+.PHONY: clean

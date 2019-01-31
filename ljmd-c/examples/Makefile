@@ -3,7 +3,7 @@
 #EXE=ljmd-serial.x 
 EXE=ljmd-split.x
 
-default: check
+default: check python
 
 clean:
 	rm -f *.xyz *.dat
@@ -18,3 +18,10 @@ check: ../$(EXE)
 	# head -10 ../reference/argon_2916.dat | awk '{printf("%d %.6f %.6f %.6f\n",$$1,$$2,$$3,$$4);}'> b.dat
 	# cmp a.dat b.dat || exit 1
 	# rm -f a.dat b.dat
+
+time:
+	./time.sh
+
+python:
+	python3 ../py_interface/interface.py argon_108.inp
+

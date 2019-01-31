@@ -18,12 +18,15 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <math.h>
+#include <omp.h>
 
 //static int get_a_line(FILE *fp, char *buf);
 
 /* main */
 int main(int argc, char **argv) 
 {
+	
+	
     int nprint, i;
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
     FILE *fp,*traj,*erg;
@@ -90,7 +93,7 @@ int main(int argc, char **argv)
     traj=fopen(trajfile,"w");
 
     printf("Starting simulation with %d atoms for %d steps.\n",sys.natoms, sys.nsteps);
-    printf("     NFI            TEMP            EKIN                 EPOT              ETOT\n");
+    //printf("     NFI            TEMP            EKIN                 EPOT              ETOT\n");
     output(&sys, erg, traj);
 
     /**************************************************/
@@ -102,9 +105,11 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
-        velverlet1(&sys);
-	force(&sys);
-	velverlet2(&sys);
+		velverlet1(&sys);
+        normalize_positions(&sys);
+		force(&sys);
+		velverlet2(&sys);
+		
         ekin(&sys);
     }
     /**************************************************/
