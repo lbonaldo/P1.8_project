@@ -31,9 +31,6 @@ check_another_thing.x: check_another_thing.c
 check_force.x: check_force.c $(OBJDIR)/force.o $(OBJDIR)/input.o $(OBJDIR)/utilities.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDLIBS)
 
-test_a: test_a.x
-	./test_a.x < test_a.inp
-
 # linker rule
 test_a.x: $(OBJ)
 	$(CC) -o $@ $(CFLAGS) $^ $(LDLIBS)

@@ -23,12 +23,13 @@ if [[ (! $? -eq 0 ) || ( ! $ret -eq 0 ) ]]; then
 fi
 echo " Accepted."
 
-echo -n "Test something else ... "
-./check_another_thing.x
+echo -n "Test A ... "
+./test_a.x < test_a.inp	
 if [[ ! $? -eq 0  ]]; then
 	echo " Wrong answer"
 	exit 1
 fi
+
 echo " Accepted."
 
 echo ""

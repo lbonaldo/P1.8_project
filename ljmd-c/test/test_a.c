@@ -119,7 +119,7 @@ int main(int argc, char **argv)
       assert(sp>0.0);
       
     //exit
-    printf("Test done succesfully.\n");
+    //printf("Test done succesfully.\n");
 
     free(sys.rx);
     free(sys.ry);
