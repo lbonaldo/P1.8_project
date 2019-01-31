@@ -81,7 +81,7 @@ int main(int argc, char **argv)
     fa[0]=sys.fx; fa[1]=sys.fy; fa[2]=sys.fz;
     for(i=0; i<3; i++)
       for(j=0; j<sys.natoms; j++)
-	assert(fabs(fa[i][j])<eps);
+	if(!(fabs(fa[i][j])<eps)) return 1;
 	  
     //Initialize particles of pbc{in} type
     sys.rx[0]=0.0; sys.ry[0]=-10.0; sys.rz[0]=12.0;
@@ -100,24 +100,25 @@ int main(int argc, char **argv)
     //at least one force component must be nonzero
     fa[0]=sys.fx; fa[1]=sys.fy; fa[2]=sys.fz;
     for(j=0; j<sys.natoms; j++)
-    	assert(fabs(fa[0][j])>eps || fabs(fa[1][j])>eps || fabs(fa[2][j])>eps);
+      if(!(fabs(fa[0][j])>eps || fabs(fa[1][j])>eps || fabs(fa[2][j])>eps)) return 2;
 
     //assert condition 3:
     //forces must have opposite sign
     for(i=0; i<3; i++){
       sum[i]=fabs(fa[i][0]+fa[i][1]);
-      assert(sum[i]<eps);
+      if(!(sum[i]<eps)) return 3;
     }
-    //asser condition 4:
+    //assert condition 4:
     //force must be attractive/repulsive
     //depending on the relative position between
     //mutual distance and potential minimum
     sp=sys.fx[1]*rx + sys.fy[1]*ry + sys.fz[1]*rz;
-    if(r<vmin)
-      assert(sp<0.0);
-    else
-      assert(sp>0.0);
-      
+    if(r<vmin){
+      if(!(sp<0.0)) return 4;
+    }
+    else{
+      if(!(sp>0.0)) return 4;
+    }
     //exit
     //printf("Test done succesfully.\n");
 
