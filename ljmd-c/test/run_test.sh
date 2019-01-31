@@ -29,8 +29,18 @@ if [[ ! $? -eq 0  ]]; then
 	echo " Wrong answer"
 	exit 1
 fi
-
 echo " Accepted."
+
+for i in 1 2 3 4 5
+do
+	echo -n "Test B $i ... "
+	./test_b.x $i < test_b.inp >/dev/null	
+	if [[ ! $? -eq 0  ]]; then
+		echo " Wrong answer"
+		exit 1
+	fi
+	echo " Accepted."
+done
 
 echo ""
 echo " ... argon_108 ..."

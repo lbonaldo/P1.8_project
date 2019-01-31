@@ -8,7 +8,9 @@ int main(int argc, char * argv[])
   char line[200];
 
   mdsys_t sys;
-  
+ 
+ 	printf("here\n");
+ 
   if( argc < 2 ){
     printf("Error. The program runs as following: %s [TEST NUMBER]. \nCase 1: v(t)=0, x(t)=0\nCase 2: v(t)=0, F(t)=0\nCase 3: a(t)=-0.5v(t)/dt\nCase 4: a(t)>-0.5v(t)/dt\nCase 5: a(t)<-0.5v(t)/dt.\nProgram exit ...\n", argv[0]);
     exit(1);

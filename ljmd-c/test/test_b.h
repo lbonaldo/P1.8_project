@@ -99,8 +99,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 fabs(sys->ry[i] - pos_value[3*i+1] - sys->dt*sys->vy[i]) < eps &&
 	 fabs(sys->rz[i] - pos_value[3*i+2] - sys->dt*sys->vz[i]) < eps )
 	printf("Verlet1-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
-	printf("Verlet1-test (natoms: %d): FAILED.\n", sys->natoms);
+      else{
+			printf("Verlet1-test (natoms: %d): FAILED.\n", sys->natoms);
+			exit(1);
+		}
     }
     
     /* v(t+dt)=v(t+0.5dt)+0.5a(t)dt */
@@ -113,8 +115,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 fabs(sys->vy[i] - sys->dt / mvsq2e * sys->fy[i] / sys->mass) < eps &&
 	 fabs(sys->vz[i] - sys->dt / mvsq2e * sys->fz[i] / sys->mass) < eps )
 	printf("Verlet2-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
+      else{
 	printf("Verlet2-test (natoms: %d): FAILED.\n", sys->natoms);
+	exit(1);
+	}
     }
     break;
     
@@ -136,8 +140,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 fabs(sys->ry[i] - pos_value[3*i+1]) < eps &&
 	 fabs(sys->rz[i] - pos_value[3*i+2]) < eps )
 	printf("Verlet1-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
+      else{
 	printf("Verlet1-test (natoms: %d): FAILED.\n", sys->natoms);
+	exit(1);
+	}
     }
     
     velverlet2(sys);
@@ -148,8 +154,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	sys->vy[i] < eps &&
 	sys->vz[i] < eps )
        printf("Verlet2-test (natoms: %d): PASSED.\n", sys->natoms);
-     else
+     else{
        printf("Verlet2-test (natoms: %d): FAILED.\n", sys->natoms);
+	   exit(1);
+	   }
    }
    break;
    
@@ -171,8 +179,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 fabs(sys->ry[i] - pos_value[3*i+1]) < eps &&
 	 fabs(sys->rz[i] - pos_value[3*i+2]) < eps )
 	printf("Verlet1-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
+      else{
 	printf("Verlet1-test (natoms: %d): FAILED.\n", sys->natoms);
+	exit(1);
+	}
     }
 
     velverlet2(sys);
@@ -183,8 +193,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 fabs(sys->vy[i] + vel_value[3*i+1]) < eps &&
 	 fabs(sys->vz[i] + vel_value[3*i+2]) < eps )
 	printf("Verlet2-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
+      else{
 	printf("Verlet2-test (natoms: %d): FAILED.\n", sys->natoms);
+	exit(1);
+	}
     }
     break;
     
@@ -206,8 +218,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 sys->ry[i] > pos_value[3*i+1] &&
 	 sys->rz[i] > pos_value[3*i+2] )
 	printf("Verlet1-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
+      else{
 	printf("Verlet1-test (natoms: %d): FAILED.\n", sys->natoms);
+	exit(1);
+	}
       }
     
     velverlet2(sys);
@@ -218,8 +232,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 (sys->vy[i] > 0.5*sys->dt / mvsq2e * sys->fy[i] / sys->mass) &&
 	 (sys->vz[i] > 0.5*sys->dt / mvsq2e * sys->fz[i] / sys->mass) )
 	printf("Verlet2-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
+      else{
 	printf("Verlet2-test (natoms: %d): FAILED.\n", sys->natoms);
+	exit(1);
+	}
     }
     break;
     
@@ -241,8 +257,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 sys->ry[i] < pos_value[3*i+1] &&
 	 sys->rz[i] < pos_value[3*i+2] )
 	printf("Verlet1-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
+      else{
 	printf("Verlet1-test (natoms: %d): FAILED.\n", sys->natoms);
+	exit(1);
+	}
     }
     
     velverlet2(sys);
@@ -253,8 +271,10 @@ void test(mdsys_t *sys, const int test_n, const double eps, const double * pos_v
 	 (sys->vy[i] < 0.5*sys->dt / mvsq2e * sys->fy[i] / sys->mass) &&
 	 (sys->vz[i] < 0.5*sys->dt / mvsq2e * sys->fz[i] / sys->mass) )
 	printf("Verlet2-test (natoms: %d): PASSED.\n", sys->natoms);
-      else
-	printf("Verlet2-test (natoms: %d): FAILED.\n", sys->natoms);
+      else{
+		printf("Verlet2-test (natoms: %d): FAILED.\n", sys->natoms);
+		exit(1);
+		}
     }
     break;
   }
