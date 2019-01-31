@@ -5,9 +5,7 @@
 AFTER INLINING:
 108 Step 1: 2.46user
 2916 Step 1: 83.46user
-AFTER CELL LIST:
+AFTER CELL LIST W/O OMP:
 2916 Step 1-cell: 18.95user
-2916 Step 1-cell: 5.31
-2916 Step 1-cell: 4.97
-2916 Step 1-cell: 5.41
-2916 Step 1-cell: 5.66
+AFTER CELL LIST W/ OMP;
+2916 Step 1-cell: 5.44
