@@ -127,13 +127,3 @@ traj.close()
 # dso.freeme(sys_data.fx)
 # dso.freeme(sys_data.fy)
 # dso.freeme(sys_data.fz)
-
-# del sys_data.rx
-# del sys_data.ry
-# del sys_data.rz
-# del sys_data.vx
-# del sys_data.vy
-# del sys_data.vz
-# del sys_data.fx
-# del sys_data.fy
-# del sys_data.fz
