@@ -7,3 +7,7 @@ AFTER INLINING:
 2916 Step 1: 83.46user
 AFTER CELL LIST:
 2916 Step 1-cell: 18.95user
+2916 Step 1-cell: 5.31
+2916 Step 1-cell: 4.97
+2916 Step 1-cell: 5.41
+2916 Step 1-cell: 5.66

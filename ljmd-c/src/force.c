@@ -16,12 +16,18 @@ void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
-#pragma omp parallel for collapse(2)
-    for(int i=0; i < sys->Ncell; ++i){
-      int start = 54*i;
-      int c1 = sys->plist[start];
-           
-      for(int j=0; j < sys->catoms[c1]; ++j) {
+    int i, j;
+
+#pragma omp parallel for collapse(2) private(j)
+    for(i=0; i < sys->Ncells; ++i){
+      for(j=0; j < sys->natoms; ++j) {
+
+	if(j>=sys->catoms[i]) continue;
+	
+	int start = 54*i;
+	int c1 = sys->plist[start];
+       
+	int ii = sys->clist[c1][j];
 	double thread_epot = 0,fxi=0,fyi=0,fzi=0;
     	double rsq,ffac;
     	double rx,ry,rz,	
@@ -30,8 +36,6 @@ void force(mdsys_t *sys)
 	  rzi=sys->rz[ii];
 	double r6,rinv;
 	double box=sys->box,boxby2=0.5*box;
-	
-	int ii = sys->clist[c1][j];
 	
 	for(int n=0; n<27; n++){ //close this loop
 	  int c2 = sys->plist[start + (2*n + 1)];
