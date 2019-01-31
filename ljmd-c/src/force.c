@@ -5,7 +5,7 @@
 void force(mdsys_t *sys) 
 {
 
-	double c12,c6,rcsq;
+    double c12,c6,rcsq;
     c12=4.0*sys->epsilon*pow(sys->sigma,12.0);
     c6=4.0*sys->epsilon*pow(sys->sigma,6.0);
     rcsq=(sys->rcut)*(sys->rcut);
@@ -16,29 +16,36 @@ void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
-	#pragma omp parallel for 
-    for(int i=0; i < sys->natoms; ++i) {
-		
-	//	printf("iter %d thread %d\n",i,omp_get_thread_num());
-	
-		double thread_epot = 0,fxi=0,fyi=0,fzi=0;
+#pragma omp parallel for collapse(2)
+    for(int i=0; i < sys->Ncell; ++i){
+      int start = 54*i;
+      int c1 = sys->plist[start];
+           
+      for(int j=0; j < sys->catoms[c1]; ++j) {
+	double thread_epot = 0,fxi=0,fyi=0,fzi=0;
     	double rsq,ffac;
     	double rx,ry,rz,	
-			rxi=sys->rx[i],
-			ryi=sys->ry[i],
-			rzi=sys->rz[i];
-		double r6,rinv;
-		double box=sys->box,boxby2=0.5*box;
-		
-        for(int j=0; j < sys->natoms; ++j) {
+	  rxi=sys->rx[ii],
+	  ryi=sys->ry[ii],
+	  rzi=sys->rz[ii];
+	double r6,rinv;
+	double box=sys->box,boxby2=0.5*box;
+	
+	int ii = sys->clist[c1][j];
+	
+	for(int n=0; n<27; n++){ //close this loop
+	  int c2 = sys->plist[start + (2*n + 1)];
+       
+	  for(int k=0; k<sys->catoms[c2]; k++){
+	    int jj = sys->clist[c2][k];
 
             /* particles have no interactions with themselves */
-            if (i==j) continue;
+            if (ii==jj) continue;
             
             /* get distance between particle i and j */
-            rx=pbc(rxi - sys->rx[j], boxby2,box);
-            ry=pbc(ryi - sys->ry[j], boxby2,box);
-            rz=pbc(rzi - sys->rz[j], boxby2,box);
+            rx=pbc(rxi - sys->rx[jj], boxby2,box);
+            ry=pbc(ryi - sys->ry[jj], boxby2,box);
+            rz=pbc(rzi - sys->rz[jj], boxby2,box);
             rsq = rx*rx + ry*ry + rz*rz;
       
             /* compute force and energy if within cutoff */
@@ -47,16 +54,17 @@ void force(mdsys_t *sys)
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
                 thread_epot += (c12*r6 - c6)*r6;
 
-                fxi += rx*ffac;
+      	        fxi += rx*ffac;
                 fyi += ry*ffac;
                 fzi += rz*ffac;
-            }
-        }
-		sys->fx[i]+=fxi;
-		sys->fy[i]+=fyi;
-		sys->fz[i]+=fzi;
-		
-		#pragma omp critical
-		sys -> epot += thread_epot*0.5;
+	    }
+	  }
+	}
+	sys->fx[ii]+=fxi;
+	sys->fy[ii]+=fyi;
+	sys->fz[ii]+=fzi;		
+#pragma omp critical
+	sys -> epot += thread_epot*0.5;
+      }
     }
 }

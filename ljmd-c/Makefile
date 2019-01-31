@@ -22,6 +22,7 @@ clean:
 	$(MAKE) $(MFLAGS) -C examples clean
 	$(MAKE) $(MFLAGS) -C test clean
 	$(MAKE) $(MFLAGS) -C library clean
+	$(MAKE) $(MFLAGS) -C test_cell clean
 
 check: split
 	$(MAKE) $(MFLAGS) -C examples check
@@ -31,6 +32,9 @@ pretest: split
 
 test_a:
 	$(MAKE) $(MFLAGS) -C test test_a
+
+cell:
+	$(MAKE) $(MFLAGS) -C test_cell cell
 
 time: split
 	$(MAKE) $(MFLAGS) -C examples time

@@ -2,3 +2,8 @@
 2916 Step 0: 101.82user
 108 Step 1: 2.67user
 2916 Step 1: 99.22user
+AFTER INLINING:
+108 Step 1: 2.46user
+2916 Step 1: 83.46user
+AFTER CELL LIST:
+2916 Step 1-cell: 18.95user

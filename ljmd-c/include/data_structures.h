@@ -1,4 +1,3 @@
-
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
@@ -11,8 +10,15 @@ struct _mdsys {
     double *rx, *ry, *rz;
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
+
+  //cell structures
+    double clen;
+    int ncells, Ncells; //ncells: along a SINGLE direction
+                        //Ncells: total
+    int **clist;        //lists of cell indices
+    int npair, *plist;  //list of close pairs
+    int *catoms;        //num of atoms per cell;
 };
 typedef struct _mdsys mdsys_t;
-
 
 #endif

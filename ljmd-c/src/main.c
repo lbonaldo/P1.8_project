@@ -12,6 +12,7 @@
 #include <data_structures.h>
 #include <verlet1.h>
 #include <verlet2.h>
+#include <cell.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -21,6 +22,8 @@
 #include <omp.h>
 
 //static int get_a_line(FILE *fp, char *buf);
+#include <assert.h>
+#include <stddef.h>
 
 /* main */
 int main(int argc, char **argv) 
@@ -54,11 +57,20 @@ int main(int argc, char **argv)
     sys.dt=atof(line);
     if(get_a_line(stdin,line)) return 1;
     nprint=atoi(line);
+    
+    if(get_a_line(stdin,line)) return 1;
+    sys.clen=atof(line);
+
+    assert(sys.clen >= sys.rcut);
+    /* compute number of cells */
+    sys.ncells = sys.box/sys.clen;
+    assert(sys.ncells>2 && "Not enough cells.");
+    sys.Ncells = sys.ncells * sys.ncells * sys.ncells;
 
     /* allocate memory */
     sys.rx=(double *)malloc(sys.natoms*sizeof(double));
     sys.ry=(double *)malloc(sys.natoms*sizeof(double));
-    sys.rz=(double *)malloc(sys.natoms*sizeof(double));
+    sys.rz=(double *)malloc(sys.natoms*sizeof(double));    
     sys.vx=(double *)malloc(sys.natoms*sizeof(double));
     sys.vy=(double *)malloc(sys.natoms*sizeof(double));
     sys.vz=(double *)malloc(sys.natoms*sizeof(double));
@@ -66,6 +78,21 @@ int main(int argc, char **argv)
     sys.fy=(double *)malloc(sys.natoms*sizeof(double));
     sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 
+    /* memory for cell operations */
+    sys.clist=(int **)malloc(sys.Ncells*sizeof(int*)); //Pointers to cells
+    sys.plist=(int *)malloc(sys.Ncells*54*sizeof(int)); //List of pairs
+    sys.catoms=(int *)malloc(sys.Ncells*sizeof(int)); //atoms per cell
+
+    /* initialize clist and catoms*/
+    for(i=0; i<sys.Ncells; i++){
+      sys.clist[i]=(int *)malloc(sizeof(int));
+      sys.catoms[i]=0;
+    }
+    
+    sys.npair = sys.Ncells * 27;
+    /* create the pair list */
+    allocate_pairs(&sys);
+    
     /* read restart */
     fp=fopen(restfile,"r");
     if(fp) {
@@ -84,6 +111,9 @@ int main(int argc, char **argv)
         return 3;
     }
 
+    /* allocate particles inside the cells */
+    allocate_cells(&sys);
+    
     /* initialize forces and energies.*/
     sys.nfi=0;
     force(&sys);
@@ -105,12 +135,15 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
-		velverlet1(&sys);
-        normalize_positions(&sys);
-		force(&sys);
-		velverlet2(&sys);
-		
+        velverlet1(&sys);
+
+	/* allocate the atoms inside the cells */
+	allocate_cells(&sys);
+
+	force(&sys);
+	velverlet2(&sys);
         ekin(&sys);
+	
     }
     /**************************************************/
 
@@ -129,5 +162,11 @@ int main(int argc, char **argv)
     free(sys.fy);
     free(sys.fz);
 
+    free(sys.plist);
+    free(sys.catoms);
+    for(i=0; i<sys.Ncells; i++)
+      free(sys.clist[i]);
+    free(sys.clist);
+    
     return 0;
 }
