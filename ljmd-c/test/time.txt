@@ -3,7 +3,9 @@
 108 Step 1: 2.67user
 2916 Step 1: 99.22user
 AFTER INLINING:
-108 Step 1: 2.46user
-2916 Step 1: 83.46user
+108 Step 1: 2.53
+2916 Step 1: 81.93
+108 Step 2: 1.13
+2916 Step 2: 35.00
 AFTER CELL LIST:
-2916 Step 1-cell: 18.95user
+2916 Step 1-cell: 18.13
