@@ -6,7 +6,7 @@ OBJ=$(OBJDIR)/force.o $(OBJDIR)/input.o $(OBJDIR)/utilities.o $(OBJDIR)/verlet1.
 CC=gcc
 CFLAGS=-I../include -fopenmp -Wall -O3 -ffast-math -fomit-frame-pointer -std=gnu11
 LDLIBS=-lm
-checklist=check_overall_energy.x check_another_thing.x check_force.x
+checklist=check_overall_energy.x check_force.x test_a.x test_b.x
 
 default: pretest
 
