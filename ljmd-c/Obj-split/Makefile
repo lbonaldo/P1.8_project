@@ -1,7 +1,7 @@
 # -*- Makefile -*-
 SHELL=/bin/sh
 CC=gcc
-CFLAGS=-I../include -Wall -O3 -ffast-math -fomit-frame-pointer -fopenmp
+CFLAGS=-I../include -Wall -O3 -ffast-math -fomit-frame-pointer -fopenmp -std=gnu11
 LDLIBS=-lm
 
 # list of source files
