@@ -3,5 +3,5 @@
 108 Step 1: 2.67user
 2916 Step 1: 99.22user
 AFTER INLINING:
-108 Step 1: 2.46user
-2916 Step 1: 83.46user
+108 Step 1: 2.53
+2916 Step 1: 81.93
