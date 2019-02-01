@@ -7,7 +7,7 @@ from math import *
 #to get argument from terminal
 from sys import argv
 
-input_file = 'argon_108.inp'
+input_file = '../examples/argon_108.inp'
 
 #import c-libraries
 dso = CDLL("../sysdlib.so")
