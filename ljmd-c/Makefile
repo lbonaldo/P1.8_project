@@ -29,8 +29,8 @@ check: split
 pretest: split
 	$(MAKE) $(MFLAGS) -C test pretest
 
-test_a:
-	$(MAKE) $(MFLAGS) -C test test_a
+unittest: split
+	$(MAKE) $(MFLAGS) -C test unittest
 
 time: split
 	$(MAKE) $(MFLAGS) -C examples time

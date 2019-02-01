@@ -14,6 +14,9 @@ default: pretest
 pretest: main generate $(checklist) test_a.x test_b.x
 	./run_test.sh
 
+unittest: main generate $(checklist) test_a.x test_b.x
+	python3 test_interface.py
+
 ### The program must be built in order to run tests
 main:
 	$(MAKE) $(MFLAGS) -C ..  
@@ -43,15 +46,14 @@ test_b.x: test_b.h
 # dependencies
 %.o: ../include/%.h
 
-
 clean:
 	rm -f *.x *.test *.dat *.xyz *.o *.mod
 
 ### generate reference files
 generate: main 
-	$(exe) < argon_108.inp.gen > /dev/null 
+	$(exe) < argon_108.inp.gen > /dev/null
 
-.PHONY: pretest clean generate main
+.PHONY: pretest clean generate main unittest
 
 
 
