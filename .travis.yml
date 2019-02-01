@@ -1,3 +1,5 @@
-language: c
+language: 
+	- c
+	- python3
 
 script: make && make check
