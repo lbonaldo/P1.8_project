@@ -107,7 +107,7 @@ if __name__=="__main__":
     erg = open(ergfile,"w")
     traj = open(trajfile,"w")
 
-    print(f"Starting simulation with {sys_data.natoms} atoms for {sys_data.nsteps} steps.")
+    print("Starting simulation with %d atoms for %d steps." % (sys_data.natoms,sys_data.nsteps))
     print("     NFI            TEMP            EKIN                 EPOT              ETOT")
 
     output(sys_data, erg, traj)
