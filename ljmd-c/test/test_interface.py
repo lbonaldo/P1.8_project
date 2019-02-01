@@ -4,7 +4,7 @@ import sys
 
 sys.path.append('../py_interface')
 
-import t_interface
+import interface
 
 class Test(unittest.TestCase):
 
@@ -13,18 +13,22 @@ class Test(unittest.TestCase):
         pass
 
     def test_check_input_arguments(self):
-        arg_input = [t_interface.sys_data.natoms,
-                     t_interface.sys_data.mass,
-                     t_interface.sys_data.epsilon,
-                     t_interface.sys_data.sigma,
-                     t_interface.sys_data.rcut,
-                     t_interface.sys_data.box,
-                     t_interface.restfile,
-                     t_interface.trajfile,
-                     t_interface.ergfile,
-                     t_interface.sys_data.nsteps,
-                     t_interface.sys_data.dt,
-                     t_interface.nprint]
+    
+        input_file = '../examples/argon_108.inp'
+        test_sys=interface.mdsys()
+        restfile,trajfile,ergfile,nprint = interface.read_input_file(input_file,test_sys)
+        arg_input = [test_sys.natoms,
+                     test_sys.mass,
+                     test_sys.epsilon,
+                     test_sys.sigma,
+                     test_sys.rcut,
+                     test_sys.box,
+                     restfile,
+                     trajfile,
+                     ergfile,
+                     test_sys.nsteps,
+                     test_sys.dt,
+                     nprint]
         
         arg_test = [108,39.948,0.2379,3.405,8.5,17.1580,"argon_108.rest","argon_108.xyz","argon_108.dat",10000,5.0,100]
         
@@ -32,17 +36,28 @@ class Test(unittest.TestCase):
         self.assertEqual(len(arg_input),12)
 
     def test_read_file(self):
-        rest = open('argon_108_rest.test', 'w+')
-        t_interface.read_file(t_interface.restfile, t_interface.sys_data)
-        for i in range(t_interface.sys_data.natoms):
-            print("{:16.14f}\t{:16.14f}\t{:16.14f}".format(t_interface.sys_data.rx[i], t_interface.sys_data.ry[i], t_interface.sys_data.rz[i]), file=rest)
-        for line1, line2 in zip(rest, t_interface.restfile):
-            assertAlmostEqual(float(line1.split()[0]), float(line2.split()[0]))
-            assertAlmostEqual(float(line1.split()[1]), float(line2.split()[1]))
-            assertAlmostEqual(float(line1.split()[2]), float(line2.split()[2]))
-        rest.close()
-        if(not(rest.closed)):
-            print("Error. Files not closed!")
+        test_sys=interface.mdsys()
+        
+        rest='../examples/argon_108.rest'
+        
+        interface.read_input_file('../examples/argon_108.inp',test_sys)
+        interface.allocate(test_sys)
+        interface.read_file(rest,test_sys)
+        
+        f=open(rest,"r")
+        
+        for i in range(test_sys.natoms):
+            x,y,z=f.readline().split()
+            self.assertAlmostEqual(float(x),test_sys.rx[i]) 
+            self.assertAlmostEqual(float(y),test_sys.ry[i]) 
+            self.assertAlmostEqual(float(z),test_sys.rz[i]) 
+        
+        for i in range(test_sys.natoms):
+            vx,vy,vz=f.readline().split()
+            self.assertAlmostEqual(float(vx),test_sys.vx[i]) 
+            self.assertAlmostEqual(float(vy),test_sys.vy[i]) 
+            self.assertAlmostEqual(float(vz),test_sys.vz[i]) 
+        f.close()
             
     def test_force(self):
         subprocess.check_output('./test_a.x < test_a.inp', shell=True)

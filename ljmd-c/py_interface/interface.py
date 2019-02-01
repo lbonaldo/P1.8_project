@@ -7,7 +7,6 @@ from math import *
 #to get argument from terminal
 from sys import argv
 
-script, input_file = argv
 
 #import c-libraries
 dso = CDLL("../sysdlib.so")
@@ -36,6 +35,38 @@ def read_file(restfile, sys_data):
             print("Initilization error.")
     rest.close()
 
+def read_input_file(input_file,sys_data):
+    with open(input_file, 'r') as f:
+        inputs = [i.split()[0] for i in f] ##add an error if not initialized? if(fp)?
+
+    sys_data.natoms = int(inputs[0])
+    sys_data.mass = float(inputs[1])
+    sys_data.epsilon=float(inputs[2])
+    sys_data.sigma=float(inputs[3])
+    sys_data.rcut=float(inputs[4])
+    sys_data.box=float(inputs[5])
+    restfile=inputs[6]
+    trajfile=inputs[7]
+    ergfile=inputs[8]
+    sys_data.nsteps=int(inputs[9])
+    sys_data.dt=float(inputs[10])
+    nprint=int(inputs[11])
+    
+    return (restfile,trajfile,ergfile,nprint)
+
+def allocate(sys_data):
+    #"allocate" memory
+    sys_data.rx = (c_double * sys_data.natoms)()
+    sys_data.ry = (c_double * sys_data.natoms)()
+    sys_data.rz = (c_double * sys_data.natoms)()
+    sys_data.vx = (c_double * sys_data.natoms)()
+    sys_data.vy = (c_double * sys_data.natoms)()
+    sys_data.vz = (c_double * sys_data.natoms)()
+    sys_data.fx = (c_double * sys_data.natoms)()
+    sys_data.fy = (c_double * sys_data.natoms)()
+    sys_data.fz = (c_double * sys_data.natoms)()
+
+
 #structure with the constants
 class mdsys(Structure):
     _fields_ = [("natoms", c_int), ("nfi", c_int), ("nsteps", c_int),
@@ -46,74 +77,57 @@ class mdsys(Structure):
                 ("vx", POINTER(c_double)), ("vy", POINTER(c_double)), ("vz", POINTER(c_double)),
                 ("fx", POINTER(c_double)), ("fy", POINTER(c_double)), ("fz", POINTER(c_double))]
 
-with open(input_file, 'r') as f:
-    inputs = [i.split()[0] for i in f] ##add an error if not initialized? if(fp)?
 
-#initializing the structure from file
-sys_data = mdsys()
 
-sys_data.natoms = int(inputs[0])
-sys_data.mass = float(inputs[1])
-sys_data.epsilon=float(inputs[2])
-sys_data.sigma=float(inputs[3])
-sys_data.rcut=float(inputs[4])
-sys_data.box=float(inputs[5])
-restfile=inputs[6]
-trajfile=inputs[7]
-ergfile=inputs[8]
-sys_data.nsteps=int(inputs[9])
-sys_data.dt=float(inputs[10])
-nprint=int(inputs[11])
 
-#"allocate" memory
-sys_data.rx = (c_double * sys_data.natoms)()
-sys_data.ry = (c_double * sys_data.natoms)()
-sys_data.rz = (c_double * sys_data.natoms)()
-sys_data.vx = (c_double * sys_data.natoms)()
-sys_data.vy = (c_double * sys_data.natoms)()
-sys_data.vz = (c_double * sys_data.natoms)()
-sys_data.fx = (c_double * sys_data.natoms)()
-sys_data.fy = (c_double * sys_data.natoms)()
-sys_data.fz = (c_double * sys_data.natoms)()
+if __name__=="__main__":
 
-#initialization
-read_file(restfile, sys_data)
-            
-dso.azzero.argtypes = [ POINTER(c_double), c_int]
-dso.azzero(sys_data.fx, sys_data.natoms)
-dso.azzero(sys_data.fy, sys_data.natoms)
-dso.azzero(sys_data.fz, sys_data.natoms)
-
-sys_data.nfi = 0
-
-# initialize forces and energies
-dso.force(byref(sys_data))
-dso.ekin(byref(sys_data))
-
-erg = open(ergfile,"w")
-traj = open(trajfile,"w")
-
-print(f"Starting simulation with {sys_data.natoms} atoms for {sys_data.nsteps} steps.")
-print("     NFI            TEMP            EKIN                 EPOT              ETOT")
-
-output(sys_data, erg, traj)
-
-# main MD loop
+    script, input_file = argv
     
-for sys_data.nfi in range(1, sys_data.nsteps + 1, 1):
+    #initializing the structure from file
+    sys_data = mdsys()
 
-    # write output, if requested
-    if ((sys_data.nfi % nprint) == 0):
-        output(sys_data, erg, traj)
-        
-    #  propagate system and recompute energies
-    dso.velverlet1(byref(sys_data))
+    restfile,trajfile,ergfile,nprint = read_input_file(input_file,sys_data)
+    
+    allocate(sys_data)
+
+    #initialization
+    read_file(restfile, sys_data)
+    dso.azzero.argtypes = [ POINTER(c_double), c_int]
+    dso.azzero(sys_data.fx, sys_data.natoms)
+    dso.azzero(sys_data.fy, sys_data.natoms)
+    dso.azzero(sys_data.fz, sys_data.natoms)
+
+    sys_data.nfi = 0
+
+    # initialize forces and energies
     dso.force(byref(sys_data))
-    dso.velverlet2(byref(sys_data))
     dso.ekin(byref(sys_data))
 
-# clean up: close files, free memory
-print("Simulation Done.")
+    erg = open(ergfile,"w")
+    traj = open(trajfile,"w")
 
-erg.close()
-traj.close()
+    print(f"Starting simulation with {sys_data.natoms} atoms for {sys_data.nsteps} steps.")
+    print("     NFI            TEMP            EKIN                 EPOT              ETOT")
+
+    output(sys_data, erg, traj)
+
+    # main MD loop
+        
+    for sys_data.nfi in range(1, sys_data.nsteps + 1, 1):
+
+        # write output, if requested
+        if ((sys_data.nfi % nprint) == 0):
+            output(sys_data, erg, traj)
+        
+        #  propagate system and recompute energies
+        dso.velverlet1(byref(sys_data))
+        dso.force(byref(sys_data))
+        dso.velverlet2(byref(sys_data))
+        dso.ekin(byref(sys_data))
+
+    # clean up: close files, free memory
+    print("Simulation Done.")
+
+    erg.close()
+    traj.close()
