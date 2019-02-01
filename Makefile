@@ -3,7 +3,6 @@ default:
 
 check:
 	$(MAKE) $(MFLAGS) -C ljmd-c check
-	$(MAKE) $(MFLAGS) -C ljmd-c unittest
 
 pretest:
 	$(MAKE) $(MFLAGS) -C ljmd-c pretest
