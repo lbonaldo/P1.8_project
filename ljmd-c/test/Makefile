@@ -14,7 +14,7 @@ default: pretest
 pretest: main generate $(checklist) test_a.x test_b.x
 	./run_test.sh
 
-unittest: main generate $(checklist) test_a.x test_b.x
+check: main generate $(checklist) test_a.x test_b.x
 	python3 test_interface.py
 
 ### The program must be built in order to run tests

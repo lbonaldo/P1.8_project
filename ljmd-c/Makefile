@@ -24,7 +24,7 @@ clean:
 	$(MAKE) $(MFLAGS) -C library clean
 
 check: split
-	$(MAKE) $(MFLAGS) -C examples check
+	$(MAKE) $(MFLAGS) -C test check
 
 
 pretest: split
